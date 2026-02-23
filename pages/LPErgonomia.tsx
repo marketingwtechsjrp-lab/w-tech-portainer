@@ -33,6 +33,8 @@ import {
     BookOpen,
     Lock,
     Infinity,
+    Clock4,
+    CalendarDays,
 } from 'lucide-react';
 
 /* ─── Reduced Motion Hook ─── */
@@ -177,6 +179,48 @@ const LPErgonomia: React.FC = () => {
         document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     };
 
+    /* ─── SALES HOOKS HOOKS ─── */
+    const [timeLeft, setTimeLeft] = useState(7 * 60); // 7 minutes in seconds
+    const [showBuyer, setShowBuyer] = useState(false);
+    const [currentBuyer, setCurrentBuyer] = useState<{name: string, role: string, city: string} | null>(null);
+
+    // Countdown Timer logic
+    useEffect(() => {
+        if (timeLeft <= 0) return;
+        const timer = setInterval(() => {
+            setTimeLeft(prev => prev - 1);
+        }, 1000);
+        return () => clearInterval(timer);
+    }, [timeLeft]);
+
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+
+    // Fake Buyers Notification Logic (Men, amateur pilots, and mechanics only)
+    const buyers = [
+        { name: 'Roberto S.', role: 'Piloto Amador', city: 'São Paulo, SP' },
+        { name: 'Daniel M.', role: 'Mecânico', city: 'Belo Horizonte, MG' },
+        { name: 'Thiago F.', role: 'Piloto de Trilha', city: 'Curitiba, PR' },
+        { name: 'Lucas A.', role: 'Dono de Oficina', city: 'Goiânia, GO' },
+        { name: 'Marcelo K.', role: 'Piloto de Enduro', city: 'Caxias do Sul, RS' },
+        { name: 'Fábio J.', role: 'Mecânico Preparador', city: 'Ribeirão Preto, SP' },
+    ];
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const randomBuyer = buyers[Math.floor(Math.random() * buyers.length)];
+            setCurrentBuyer(randomBuyer);
+            setShowBuyer(true);
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                setShowBuyer(false);
+            }, 5000);
+        }, 18000); // 18 seconds between each popup
+        
+        return () => clearInterval(interval);
+    }, []);
+
     /* ━━━ SECTION DATA ━━━ */
 
     const profiles = [
@@ -254,7 +298,7 @@ const LPErgonomia: React.FC = () => {
         { q: 'Posso assistir no celular?', a: 'Sim. A plataforma funciona em qualquer dispositivo — celular, tablet ou computador.' },
         { q: 'O curso serve para qual tipo de moto?', a: 'Os princípios ensinados se aplicam a Enduro, Motocross, Big Trail e até mesmo Hard Enduro. As teorias de molas, hidráulica e SAG são fundamentos universais para o Off-Road.' },
         { q: 'Tem suporte para dúvidas?', a: 'Sim. Você terá acesso a um canal exclusivo para tirar dúvidas de regulagens de suspensão diretamente com a equipe W-Tech.' },
-        { q: 'Por quanto tempo tenho acesso?', a: 'Acesso vitalício. Você pode reassistir as aulas quantas vezes quiser, para sempre.' },
+        { q: 'Por quanto tempo tenho acesso?', a: 'O seu acesso é válido por 12 meses (1 Ano). Você pode reassistir as aulas quantas vezes quiser durante este período.' },
         { q: 'Tem garantia?', a: 'Sim. Garantia incondicional de 7 dias. Se não gostar, devolvemos 100% do seu investimento.' },
     ];
 
@@ -543,7 +587,7 @@ const LPErgonomia: React.FC = () => {
                         {[
                             { icon: <Monitor size={20} />, text: '100% Online' },
                             { icon: <Play size={20} />, text: 'Aulas Gravadas' },
-                            { icon: <Infinity size={20} />, text: 'Acesso Vitalício' },
+                            { icon: <CalendarDays size={20} />, text: 'Acesso 12 Meses' },
                         ].map((f, i) => (
                             <motion.div
                                 key={i}
@@ -868,26 +912,25 @@ const LPErgonomia: React.FC = () => {
                             ou R$ 347,00 à vista no Pix/Cartão
                         </div>
 
-                        {/* Timer Mockup */}
+                        {/* Real Timer */}
                         <div className="flex items-center justify-center gap-3 sm:gap-4 mb-8">
                             <div className="flex flex-col items-center">
-                                <div className="bg-[#111] border border-white/10 rounded-xl w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center text-2xl font-black text-white shadow-inner">11</div>
-                                <span className="text-[8px] sm:text-[10px] text-gray-500 uppercase tracking-widest mt-2">Horas</span>
+                                <div className="bg-[#111] border border-[#E6241D]/30 rounded-xl w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center text-3xl font-black text-[#E6241D] shadow-[inset_0_0_15px_rgba(230,36,29,0.2)]">
+                                    {String(minutes).padStart(2, '0')}
+                                </div>
+                                <span className="text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-widest mt-2 font-bold">Minutos</span>
                             </div>
-                            <span className="text-xl sm:text-2xl font-black text-gray-700 -mt-6">:</span>
+                            <span className="text-xl sm:text-2xl font-black text-[#E6241D]/50 -mt-6 animate-pulse">:</span>
                             <div className="flex flex-col items-center">
-                                <div className="bg-[#111] border border-white/10 rounded-xl w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center text-2xl font-black text-white shadow-inner">58</div>
-                                <span className="text-[8px] sm:text-[10px] text-gray-500 uppercase tracking-widest mt-2">Minutos</span>
-                            </div>
-                            <span className="text-xl sm:text-2xl font-black text-gray-700 -mt-6">:</span>
-                            <div className="flex flex-col items-center">
-                                <div className="bg-[#111] border border-white/10 rounded-xl w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center text-2xl font-black text-white shadow-inner">55</div>
-                                <span className="text-[8px] sm:text-[10px] text-gray-500 uppercase tracking-widest mt-2">Segundos</span>
+                                <div className="bg-[#111] border border-[#E6241D]/30 rounded-xl w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center text-3xl font-black text-[#E6241D] shadow-[inset_0_0_15px_rgba(230,36,29,0.2)]">
+                                    {String(seconds).padStart(2, '0')}
+                                </div>
+                                <span className="text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-widest mt-2 font-bold">Segundos</span>
                             </div>
                         </div>
 
                         <p className="text-gray-400 text-sm md:text-base mb-10 max-w-xl mx-auto leading-relaxed">
-                            Enquanto esta página estiver no ar, você garante acesso por 1 Ano com todos os bônus inclusos.
+                            Ao finalizar o contador acima as matrículas da turma atual podem encerrar. Oportunidade com 1 Ano de acesso e bônus inclusos.
                         </p>
 
                         <div className="grid sm:grid-cols-2 gap-y-5 gap-x-2 max-w-2xl mx-auto mb-12 text-left">
@@ -918,7 +961,7 @@ const LPErgonomia: React.FC = () => {
                         </div>
 
                         <motion.button
-                            onClick={() => window.open('#', '_blank')}
+                            onClick={() => window.open('https://pay.kiwify.com.br/19v4nIa', '_blank')}
                             whileHover={shouldAnimate ? { scale: 1.02, boxShadow: '0 0 40px rgba(230,36,29,0.3)' } : undefined}
                             whileTap={shouldAnimate ? { scale: 0.98 } : undefined}
                             className="w-full max-w-xl mx-auto bg-gradient-to-r from-[#ba1d18] to-[#E6241D] hover:from-[#d1221c] hover:to-[#ff2820] text-white px-8 py-5 sm:py-6 rounded-2xl font-black text-sm md:text-[15px] uppercase tracking-widest transition-all mb-8 shadow-xl"
@@ -1062,6 +1105,28 @@ const LPErgonomia: React.FC = () => {
                     </p>
                 </div>
             </footer>
+
+            {/* ═══════════════════════════════════════════ */}
+            {/* BUYERS POPUP FLOAT COMPONENT                 */}
+            {/* ═══════════════════════════════════════════ */}
+            <motion.div
+                initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                animate={{ opacity: showBuyer ? 1 : 0, y: showBuyer ? 0 : 50, scale: showBuyer ? 1 : 0.9 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                className="fixed bottom-6 left-6 z-[100] bg-zinc-900 border border-wtech-gold/30 rounded-xl shadow-2xl p-4 flex items-center gap-4 max-w-sm pointer-events-none"
+            >
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#E6241D] to-orange-500 flex items-center justify-center text-white shrink-0 shadow-lg">
+                    <CheckCircle size={20} strokeWidth={2.5} />
+                </div>
+                <div>
+                    <p className="text-xs text-gray-400 mb-0.5">Nova inscrição confirmada</p>
+                    <p className="text-sm font-bold text-white leading-tight">
+                        {currentBuyer?.name} <span className="font-normal text-wtech-gold">({currentBuyer?.role})</span>
+                    </p>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-1">de {currentBuyer?.city}</p>
+                </div>
+            </motion.div>
+
         </div >
     );
 };
