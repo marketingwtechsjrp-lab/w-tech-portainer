@@ -183,41 +183,45 @@ const LPErgonomia: React.FC = () => {
         {
             icon: <Bike size={28} />,
             title: 'Piloto Amador',
-            pain: 'Sente dor nas costas, braços travando e cansaço excessivo após poucas horas na moto. Sabe que algo está errado, mas não sabe o quê.',
+            pain: 'Sente a moto "quicar" demais e os braços cansarem rápido. Sabe que a suspensão não copia o terreno, mas não sabe por onde começar a regular.',
         },
         {
             icon: <Mountain size={28} />,
             title: 'Piloto de Trilha / Enduro',
-            pain: 'Perde confiança nas descidas, não consegue manter o controle em terrenos técnicos e termina cada trilha exausto.',
+            pain: 'Perde tração em subidas de pedra, sofre com fim de curso em buracos/saltos ou sente a frente "espalhar" nas curvas, terminando exausto.',
         },
         {
             icon: <Wrench size={28} />,
             title: 'Mecânico / Preparador',
-            pain: 'Quer agregar valor ao serviço, mas não domina ergonomia. Ajusta peças sem entender o impacto na posição do piloto.',
+            pain: 'Quer agregar serviços de preparação de suspensão: o mercado mais lucrativo e técnico da oficina, saindo das revisões e trocas de óleo básicas.',
         },
         {
             icon: <Settings size={28} />,
             title: 'Dono de Oficina',
-            pain: 'Precisa de um diferencial competitivo. Clientes pedem ajustes ergonômicos e a equipe não sabe entregar.',
+            pain: 'Precisa de um diferencial competitivo. Seus clientes pedem ajustes que a equipe não sabe entregar, perdendo serviço para oficinas especializadas.',
         },
     ];
 
     const ergoBlocks = [
-        { icon: <Move size={24} />, title: 'Relação Corpo–Moto', desc: 'Como o piloto interage com a moto em cada situação: posição do tronco, braços, pernas e distribuição de peso.' },
-        { icon: <Settings size={24} />, title: 'Guidão e Comandos', desc: 'Altura, ângulo e recuo do guidão impactam diretamente no controle e no cansaço dos braços e punhos.' },
-        { icon: <CircleDot size={24} />, title: 'Pedaleiras e Apoio', desc: 'Posição das pedaleiras define o ângulo dos joelhos e a capacidade de absorção de impactos em pé.' },
-        { icon: <Activity size={24} />, title: 'Suspensão e SAG', desc: 'A suspensão não é só conforto — é a base que permite que todos os outros ajustes funcionem de verdade.' },
-        { icon: <Disc size={24} />, title: 'Pneus e Tração', desc: 'A escolha e pressão dos pneus alteram a geometria dinâmica da moto e o comportamento em curva.' },
+        { icon: <CircleDot size={24} />, title: 'O SAG', desc: 'A geometria sagrada da moto. O ponto de partida obrigatório antes de encostar na chave de fenda.' },
+        { icon: <Activity size={24} />, title: 'Molas e Hidráulica', desc: 'O equilíbrio exato entre absorção e retorno (os famosos "cliques") para cada tipo de peso e nível.' },
+        { icon: <Move size={24} />, title: 'Ergonomia (Cockpit)', desc: 'Como você se integra à suspensão ajustada: altura e ângulo de guidão e pedaleira.' },
+        { icon: <Disc size={24} />, title: 'Pneus e Tração', desc: 'A escolha correta e a calibragem - a ponte final entre o chão e a sua válvula de suspensão.' },
     ];
 
     const modules = [
-        { num: '01', title: 'Introdução à Ergonomia', desc: 'O que é, por que importa e como muda sua pilotagem.' },
-        { num: '02', title: 'Análise de Posição', desc: 'Como avaliar sua postura atual e identificar erros.' },
-        { num: '03', title: 'Ajustes de Guidão e Comandos', desc: 'Altura, ângulo, manoplas e alavancas — o impacto direto.' },
-        { num: '04', title: 'Pedaleiras e Apoio dos Pés', desc: 'Posicionamento correto para cada estilo de pilotagem.' },
-        { num: '05', title: 'SAG e Suspensão Aplicada', desc: 'O acerto de SAG que realmente funciona na prática.' },
-        { num: '06', title: 'Pneus, Tração e Geometria', desc: 'Como a escolha de pneu afeta a posição e o controle.' },
-        { num: '07', title: 'Equilíbrio e Confiança', desc: 'Exercícios práticos para ganhar controle e segurança.' },
+        { num: '01', title: 'Sejam Bem Vindos', desc: 'Apresentação do curso e estrutura das aulas' },
+        { num: '02', title: 'Ergonomia - O "Cockpit" do Piloto', desc: 'Sua base na moto' },
+        { num: '03', title: 'Molas e suas Particularidades', desc: 'O começo do acerto de suspensão' },
+        { num: '04', title: 'O SAG - A Geometria Sagrada', desc: 'Ajuste estático fundamental' },
+        { num: '05', title: 'Óleo e Viscosidades', desc: 'Como o fluido controla a suspensão' },
+        { num: '06', title: 'Desmistificando os "Cliques" (Hidráulica)', desc: 'Compressão e retorno em detalhes' },
+        { num: '07', title: 'SUSPENSÃO-EIXO DIANTEIRO', desc: 'As bengalas e seu funcionamento' },
+        { num: '08', title: 'Pneus e Tração - Onde a Mágica Acontece', desc: 'Lendo o terreno' },
+        { num: '09', title: 'Relação Corrente', desc: 'Ajustes que impactam muito a moto' },
+        { num: '10', title: 'Equilíbrio', desc: 'Manobras com a moto balanceada' },
+        { num: '11', title: 'Kits e Ferramentas', desc: 'O setup ideal da sua oficina' },
+        { num: '12', title: 'Módulo Bônus Com Paschoalin', desc: 'Alta performance com convidado' },
     ];
 
     const benefits = [
@@ -230,10 +234,10 @@ const LPErgonomia: React.FC = () => {
     ];
 
     const testimonials = [
-        { name: 'Ricardo F.', role: 'Piloto Amador — SP', text: 'Depois do curso, consegui rodar 300km sem dor nas costas pela primeira vez. A diferença nos ajustes é absurda.' },
-        { name: 'Marcos S.', role: 'Mecânico — MG', text: 'Comecei a oferecer ajuste ergonômico na oficina e ganhei clientes que antes iam para concessionária. Agregou muito valor.' },
-        { name: 'Tiago L.', role: 'Piloto de Enduro — PR', text: 'Minha confiança nas descidas mudou completamente. O SAG correto e a posição certa fizeram eu evoluir muito.' },
-        { name: 'Juliana M.', role: 'Pilota Street — RJ', text: 'Eu achava que a moto era desconfortável. Na verdade, eu estava toda errada na posição. Curso essencial!' },
+        { name: 'Ricardo F.', role: 'Piloto Amador — SP', text: 'Depois do curso, finalmente ajustei os cliques e o SAG para o meu peso. Chega de tomar solavanco e ceder nas trilhas. Moto grudada no chão!' },
+        { name: 'Marcos S.', role: 'Mecânico — MG', text: 'Comecei a oferecer regulagem e setup de suspensão na oficina. Ganhei novos clientes que antes iam buscar fora. O retorno foi imenso.' },
+        { name: 'Tiago L.', role: 'Piloto de Enduro — PR', text: 'As ladeiras com cavas não são mais um problema. A dianteira da roda da moto agora me dá confiança nas curvas abertas e a tração é constante.' },
+        { name: 'Juliana M.', role: 'Pilota Hard Enduro — RJ', text: 'Eu achava minhas molas macias demais, mas na verdade a hidráulica estava zerada. Entender esse casamento através do curso virou a chave da minha tocada.' },
     ];
 
     const stats = [
@@ -248,8 +252,8 @@ const LPErgonomia: React.FC = () => {
         { q: 'Como funciona o acesso às aulas?', a: 'Após a inscrição, você recebe acesso imediato à área de membros. As aulas são gravadas e você assiste quando e onde quiser.' },
         { q: 'Recebo certificado?', a: 'Sim. Ao completar todos os módulos, você recebe o certificado digital oficial da W-Tech Brasil.' },
         { q: 'Posso assistir no celular?', a: 'Sim. A plataforma funciona em qualquer dispositivo — celular, tablet ou computador.' },
-        { q: 'O curso serve para motocross, enduro e street?', a: 'Sim. Os princípios de ergonomia são universais. O curso aborda aplicações específicas para cada modalidade.' },
-        { q: 'Tem suporte para dúvidas?', a: 'Sim. Você terá acesso a um canal exclusivo para tirar dúvidas diretamente com a equipe W-Tech.' },
+        { q: 'O curso serve para qual tipo de moto?', a: 'Os princípios ensinados se aplicam a Enduro, Motocross, Big Trail e até mesmo Hard Enduro. As teorias de molas, hidráulica e SAG são fundamentos universais para o Off-Road.' },
+        { q: 'Tem suporte para dúvidas?', a: 'Sim. Você terá acesso a um canal exclusivo para tirar dúvidas de regulagens de suspensão diretamente com a equipe W-Tech.' },
         { q: 'Por quanto tempo tenho acesso?', a: 'Acesso vitalício. Você pode reassistir as aulas quantas vezes quiser, para sempre.' },
         { q: 'Tem garantia?', a: 'Sim. Garantia incondicional de 7 dias. Se não gostar, devolvemos 100% do seu investimento.' },
     ];
@@ -298,18 +302,17 @@ const LPErgonomia: React.FC = () => {
                                 <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-wtech-gold">Curso Online Premium — W-Tech</span>
                             </motion.div>
 
-                            <motion.h1 variants={v} className="text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.9] mb-6 drop-shadow-2xl">
-                                Pilote com<br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-wtech-gold via-yellow-400 to-amber-600 drop-shadow-none">Conforto, Controle</span><br />
-                                e Performance Total
+                            <motion.h1 variants={v} className="text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-[0.9] mb-6 drop-shadow-2xl">
+                                Curso de <span className="text-transparent bg-clip-text bg-gradient-to-r from-wtech-gold via-yellow-400 to-amber-600 drop-shadow-none">Suspensão<br className="hidden lg:block"/></span><br className="lg:hidden"/>
+                                <span className="text-3xl md:text-4xl lg:text-5xl">Para Piloto Off Road</span>
                             </motion.h1>
 
-                            <motion.p variants={v} className="text-base md:text-xl text-gray-200 leading-relaxed mb-6 max-w-lg">
-                                Curso online de <strong className="text-white">Ergonomia para Pilotagem e Preparação</strong> com Alex Crepaldi e participação especial de Paschoalin.
+                            <motion.p variants={v} className="text-base md:text-xl text-gray-200 leading-relaxed mb-6 max-w-lg font-bold">
+                                Saiba todos os passos para regular a suspensão da sua moto. <strong className="text-wtech-gold">Mais performance, mais controle e muito mais segurança</strong> em qualquer terreno.
                             </motion.p>
 
                             <motion.p variants={v} className="text-sm text-gray-400 mb-8 max-w-lg border-l-2 border-wtech-gold pl-4 hidden md:block">
-                                Descubra como o ajuste correto da posição, guidão, pedaleiras e suspensão transforma sua pilotagem — menos dor, mais controle, mais segurança.
+                                Descubra como o ajuste correto de molas, hidráulica, SAG e geometria transforma sua pilotagem — menos cansaço e melhor absorção dos impactos, sem jogar a moto na sua cara (ou costas!).
                             </motion.p>
 
                             <motion.div variants={v} className="flex flex-col sm:flex-row gap-4">
@@ -320,7 +323,7 @@ const LPErgonomia: React.FC = () => {
                                     className="bg-gradient-to-r from-wtech-gold to-yellow-600 text-black px-8 py-4 rounded-xl font-black text-sm uppercase tracking-widest transition-all shadow-[0_0_30px_rgba(212,175,55,0.25)] flex items-center justify-center gap-3 w-full sm:w-auto hover:brightness-110 relative overflow-hidden group"
                                 >
                                     <div className="absolute inset-0 w-full h-full bg-white/20 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-                                    <span className="relative z-10 flex items-center gap-2">Garantir Minha Vaga <ArrowRight strokeWidth={3} size={18} /></span>
+                                    <span className="relative z-10 flex items-center gap-2">Quero Dominar Minha Suspensão <ArrowRight strokeWidth={3} size={18} /></span>
                                 </motion.button>
                             </motion.div>
                         </motion.div>
@@ -386,64 +389,68 @@ const LPErgonomia: React.FC = () => {
                         {/* Box 1 - Amador (Large) */}
                         <motion.div
                             variants={v}
-                            style={{ backgroundImage: `url('/moto-amador.jpg')` }}
+                            style={{ backgroundImage: `url('/images/lp-curso/1.jpg')` }}
                             className="md:col-span-7 bg-zinc-900/80 bg-blend-overlay bg-cover bg-center border border-white/10 rounded-3xl p-8 md:p-10 transition-all hover:bg-zinc-800/80 group overflow-hidden relative shadow-lg"
                         >
-                            <div className="absolute -right-10 -top-10 w-40 h-40 bg-wtech-gold/30 rounded-full blur-[50px] group-hover:bg-wtech-gold/40 transition-colors" />
+                            <div className="absolute inset-0 bg-black/60 pointer-events-none z-0" />
+                            <div className="absolute -right-10 -top-10 w-40 h-40 bg-wtech-gold/30 rounded-full blur-[50px] group-hover:bg-wtech-gold/40 transition-colors z-0" />
                             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-wtech-gold to-amber-600 flex items-center justify-center text-black mb-6 shadow-[0_0_20px_rgba(212,175,55,0.3)] relative z-10">
                                 <Bike size={28} />
                             </div>
                             <h3 className="text-2xl lg:text-3xl font-black uppercase text-white mb-4 tracking-tight relative z-10">Piloto Amador</h3>
                             <p className="text-gray-300 text-sm md:text-base leading-relaxed relative z-10">
-                                Sente dor nas costas, braços travando e cansaço excessivo após poucas horas na moto. Sabe que algo está errado, mas não sabe como ajustar. Este curso é o seu guia definitivo.
+                                Sente a moto "quicar" demais e os braços cansarem rápido. Sabe que a suspensão não copia o terreno, mas não sabe por onde começar a regular nem quantos cliques dar. Este curso é o seu guia definitivo.
                             </p>
                         </motion.div>
 
                         {/* Box 2 - Enduro (Medium) */}
                         <motion.div
                             variants={v}
-                            style={{ backgroundImage: `url('/moto-enduro.jpg')` }}
+                            style={{ backgroundImage: `url('/images/lp-curso/2.jpg')` }}
                             className="md:col-span-5 bg-zinc-900/80 bg-blend-overlay bg-cover bg-center border border-white/10 rounded-3xl p-8 md:p-10 transition-all hover:bg-zinc-800/80 group overflow-hidden relative shadow-lg"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <div className="absolute inset-0 bg-black/60 pointer-events-none z-0" />
+                            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-0" />
                             <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-wtech-gold mb-6 group-hover:scale-110 transition-transform relative z-10">
                                 <Mountain size={24} />
                             </div>
                             <h3 className="text-xl font-black uppercase text-white mb-3 tracking-tight relative z-10">Trilha / Enduro</h3>
                             <p className="text-gray-300 text-sm leading-relaxed relative z-10">
-                                Perde confiança nas descidas, não consegue manter o controle em terrenos técnicos e termina cada trilha exausto.
+                                Perde tração em subidas, sofre com fim de curso em buracos/saltos ou sente a frente "espalhar" nas curvas, terminando exausto demais antes do fim da trilha.
                             </p>
                         </motion.div>
 
                         {/* Box 3 - Mecânico (Medium) */}
                         <motion.div
                             variants={v}
-                            style={{ backgroundImage: `url('/moto-mecanico.jpg')` }}
+                            style={{ backgroundImage: `url('/images/lp-curso/3.jpg')` }}
                             className="md:col-span-5 bg-zinc-900/80 bg-blend-overlay bg-cover bg-center border border-white/10 rounded-3xl p-8 md:p-10 transition-all hover:bg-zinc-800/80 group overflow-hidden relative shadow-lg"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-bl from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <div className="absolute inset-0 bg-black/60 pointer-events-none z-0" />
+                            <div className="absolute inset-0 bg-gradient-to-bl from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-0" />
                             <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-wtech-red mb-6 group-hover:scale-110 transition-transform relative z-10">
                                 <Wrench size={24} />
                             </div>
                             <h3 className="text-xl font-black uppercase text-white mb-3 tracking-tight relative z-10">Mecânico / Preparador</h3>
                             <p className="text-gray-300 text-sm leading-relaxed relative z-10">
-                                Quer agregar valor ao serviço, mas não domina ergonomia. Ajusta peças sem entender o impacto real na pilotagem.
+                                Quer agregar um serviço nobre de acerto de suspensão. O mercado mais lucrativo da oficina, saindo apenas das revisões e partindo para as bengalas e amortecedores.
                             </p>
                         </motion.div>
 
                         {/* Box 4 - Dono de Oficina (Large) */}
                         <motion.div
                             variants={v}
-                            style={{ backgroundImage: `url('/moto-oficina.jpg')` }}
+                            style={{ backgroundImage: `url('/images/lp-curso/4.jpg')` }}
                             className="md:col-span-7 bg-zinc-900/80 bg-blend-overlay bg-cover bg-center border border-white/10 rounded-3xl p-8 md:p-10 transition-all hover:bg-zinc-800/80 group overflow-hidden relative shadow-lg"
                         >
-                            <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-wtech-red/30 rounded-full blur-[50px] group-hover:bg-wtech-red/40 transition-colors" />
+                            <div className="absolute inset-0 bg-black/60 pointer-events-none z-0" />
+                            <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-wtech-red/30 rounded-full blur-[50px] group-hover:bg-wtech-red/40 transition-colors z-0" />
                             <div className="w-14 h-14 flex items-center justify-center text-white mb-6 border border-white/30 rounded-2xl bg-white/10 backdrop-blur shadow-inner relative z-10">
                                 <Settings size={28} />
                             </div>
                             <h3 className="text-2xl lg:text-3xl font-black uppercase text-white mb-4 tracking-tight relative z-10">Dono de Oficina</h3>
                             <p className="text-gray-300 text-sm md:text-base leading-relaxed relative z-10">
-                                Precisa de um diferencial competitivo. Clientes pedem ajustes ergonômicos e a equipe não sabe entregar um trabalho de classe mundial. Destaque-se da concorrência local.
+                                Precisa de um diferencial competitivo. Seus clientes pedem ajustes de cliques que a equipe não sabe resolver, perdendo serviço (e fidelidade) para oficinas especializadas de Off-Road.
                             </p>
                         </motion.div>
                     </motion.div>
@@ -457,7 +464,7 @@ const LPErgonomia: React.FC = () => {
                             whileTap={shouldAnimate ? ctaTap : undefined}
                             className="bg-gradient-to-r from-[#ba1d18] to-[#E6241D] text-white px-8 py-4 rounded-xl font-black text-sm uppercase tracking-widest hover:from-[#d1221c] hover:to-[#ff2820] transition-all shadow-[0_0_20px_rgba(230,36,29,0.3)] flex items-center justify-center gap-3"
                         >
-                            Quero Transformar Minha Pilotagem <ArrowRight strokeWidth={3} size={18} />
+                            Quero Dominar a Suspensão <ArrowRight strokeWidth={3} size={18} />
                         </motion.button>
                     </motion.div>
                 </div>
@@ -475,22 +482,22 @@ const LPErgonomia: React.FC = () => {
                         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }} variants={stagger}>
                             <motion.span variants={v} className="text-wtech-red font-black uppercase tracking-[0.3em] text-[10px] md:text-xs">Entenda o conceito</motion.span>
                             <motion.h2 variants={v} className="text-4xl md:text-6xl font-black uppercase mt-4 mb-8 tracking-tighter">
-                                O que é <span className="text-wtech-gold">Ergonomia</span> na Moto?
+                                Qual o Segredo do <span className="text-wtech-gold">Acerto Perfeito</span>?
                             </motion.h2>
                             <motion.p variants={v} className="text-gray-300 text-lg leading-relaxed mb-4">
-                                Ergonomia é a ciência de adaptar a moto ao corpo do piloto — e não o contrário.
+                                Não importa o quanto o motor da sua moto é forte se a suspensão não consegue colocar a potência no chão.
                             </motion.p>
                             <motion.p variants={v} className="text-gray-500 leading-relaxed mb-8">
-                                Quando guidão, pedaleiras, banco, suspensão e pneus estão ajustados para o <strong className="text-white">seu corpo e estilo de pilotagem</strong>, tudo muda:
-                                você pilota com menos esforço, mais controle e mais confiança. A dor vai embora, a fadiga diminui e a performance aparece de forma natural.
+                                Quando molas, óleo, cliques (retorno/compressão), SAG e pneus estão finamente ajustados para o <strong className="text-white">seu nível e modalidade Off-Road</strong>, tudo muda:
+                                a moto não espalha, a tração é constante nas subidas e os impactos param de moer os seus braços e sua lombar.
                             </motion.p>
                             <motion.div
                                 variants={v}
                                 whileHover={shouldAnimate ? { scale: 1.02 } : undefined}
                                 className="inline-flex items-center gap-3 bg-wtech-gold/10 border border-wtech-gold/20 px-5 py-3 rounded-lg transition-colors"
                             >
-                                <Zap size={18} className="text-wtech-gold" />
-                                <span className="text-sm font-bold text-wtech-gold">A moto ajustada para você rende mais do que qualquer peça cara.</span>
+                                <Zap size={18} className="text-wtech-gold flex-shrink-0" />
+                                <span className="text-sm font-bold text-wtech-gold">O acerto da suspensão muda a moto da água para o vinho. É investimento em performance e segurança.</span>
                             </motion.div>
                         </motion.div>
 
@@ -630,11 +637,11 @@ const LPErgonomia: React.FC = () => {
                                     <div className="inline-block bg-wtech-gold text-black text-[10px] font-black uppercase px-3 py-1 rounded mb-4">Instrutor Principal</div>
                                     <h3 className="text-2xl font-black uppercase text-white mb-1">Alex Crepaldi</h3>
                                     <p className="text-wtech-gold text-sm font-medium mb-4">Fundador W-Tech Suspensões</p>
-                                    <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                                        Referência em ergonomia aplicada, preparação de motos e suspensões on-road e off-road. Mais de <strong className="text-white">3.000 profissionais capacitados</strong> e 15+ anos de experiência em cursos técnicos no Brasil.
+                                <p className="text-gray-400 text-sm leading-relaxed mb-6">
+                                        Referência nacional no acerto, preparação e revalvulação de <strong className="text-white">suspensões Off-Road</strong>. Mais de <strong className="text-white">3.000 mecânicos e pilotos capacitados</strong> pela escola técnica W-Tech em cursos online e presenciais.
                                     </p>
                                     <div className="p-4 bg-black/50 border-l-4 border-wtech-gold text-sm text-gray-400 rounded-r-lg">
-                                        👉 Domínio técnico: ergonomia, ajuste de posição, SAG, suspensão e preparação completa.
+                                        👉 Domínio técnico em suspensão: da simples manutenção à personalização profunda com shims, fluídos e kits de revalvulação.
                                     </div>
                                 </div>
                             </motion.div>
@@ -661,10 +668,10 @@ const LPErgonomia: React.FC = () => {
                                     <h3 className="text-2xl font-black uppercase text-white mb-1">Paschoalin</h3>
                                     <p className="text-wtech-red text-sm font-medium mb-4">Piloto de Alta Performance</p>
                                     <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                                        Piloto com vasta experiência em competições e provas de alto nível. Traz a <strong className="text-white">validação prática</strong> de quem aplica ergonomia em situações reais de alta performance e exigência máxima.
+                                        Piloto com vasta experiência em competições e provas de alto nível. Traz a <strong className="text-white">validação prática da pilotagem</strong> da teoria para as trilhas de performance e exigência máxima.
                                     </p>
                                     <div className="p-4 bg-black/50 border-l-4 border-wtech-red text-sm text-gray-400 rounded-r-lg">
-                                        👉 Foco em performance: aplicação real dos ajustes em pista, trilha e provas.
+                                        👉 Foco: a reação do motor e suspensão quando exigidos ao extremo.
                                     </div>
                                 </div>
                             </motion.div>
@@ -1049,7 +1056,7 @@ const LPErgonomia: React.FC = () => {
                         alt="W-Tech"
                         className="h-8 md:h-10 mx-auto mb-6"
                     />
-                    <p className="text-gray-600 text-[10px] font-bold uppercase tracking-[0.4em] mb-2">W-Tech Brasil | Curso Online de Ergonomia</p>
+                    <p className="text-gray-600 text-[10px] font-bold uppercase tracking-[0.4em] mb-2">W-Tech Brasil | Curso Online Suspensão para Pilotos Off-Road</p>
                     <p className="text-gray-700 text-[10px] uppercase tracking-widest">
                         Todos os direitos reservados © {new Date().getFullYear()}
                     </p>
