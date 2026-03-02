@@ -1075,11 +1075,13 @@ const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead
                                 </span>
                             </div>
                             {/* Dropdown */}
-                            <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-[#1A1A1A] shadow-xl rounded-xl border border-gray-100 dark:border-gray-700 p-2 hidden group-hover:block z-50 max-h-64 overflow-y-auto custom-scrollbar">
-                                <button onClick={() => setContextFilter('All')} className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-200">Todas as Origens</button>
-                                {uniqueContexts.map((ctx: any) => (
-                                    <button key={ctx} onClick={() => setContextFilter(ctx)} className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg text-xs text-gray-600 dark:text-gray-400 truncate">{ctx}</button>
-                                ))}
+                            <div className="absolute top-full left-0 pt-2 w-64 hidden group-hover:block z-50">
+                                <div className="bg-white dark:bg-[#1A1A1A] shadow-xl rounded-xl border border-gray-100 dark:border-gray-700 p-2 max-h-64 overflow-y-auto custom-scrollbar">
+                                    <button onClick={() => setContextFilter('All')} className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-200">Todas as Origens</button>
+                                    {uniqueContexts.map((ctx: any) => (
+                                        <button key={ctx} onClick={() => setContextFilter(ctx)} className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg text-xs text-gray-600 dark:text-gray-400 truncate">{ctx}</button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
 
@@ -1093,13 +1095,15 @@ const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead
                                         {selectedUserFilter === 'All' ? 'Todos os Usuários' : (usersMap[selectedUserFilter] || 'Usuário')}
                                     </span>
                                 </div>
-                                <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-[#1A1A1A] shadow-xl rounded-xl border border-gray-100 dark:border-gray-700 p-2 hidden group-hover:block z-50 max-h-64 overflow-y-auto custom-scrollbar">
-                                    <button onClick={() => setSelectedUserFilter('All')} className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-200">Todos</button>
-                                    {usersList.map((u) => (
-                                        <button key={u.id} onClick={() => setSelectedUserFilter(u.id)} className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg text-xs text-gray-600 dark:text-gray-400 truncate">
-                                            {u.name}
-                                        </button>
-                                    ))}
+                                <div className="absolute top-full left-0 pt-2 w-64 hidden group-hover:block z-50">
+                                    <div className="bg-white dark:bg-[#1A1A1A] shadow-xl rounded-xl border border-gray-100 dark:border-gray-700 p-2 max-h-64 overflow-y-auto custom-scrollbar">
+                                        <button onClick={() => setSelectedUserFilter('All')} className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-200">Todos</button>
+                                        {usersList.map((u) => (
+                                            <button key={u.id} onClick={() => setSelectedUserFilter(u.id)} className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg text-xs text-gray-600 dark:text-gray-400 truncate">
+                                                {u.name}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         )}
