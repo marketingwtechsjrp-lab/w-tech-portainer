@@ -1,5 +1,17 @@
 [
   {
+    "version": "2.9.5",
+    "date": "2026-03-05",
+    "title": "Melhoria Visual CRM: Origem e Cidade",
+    "changes": [
+      "FEAT: Exibição dinâmica de Origem (Quiz, LP, Evento, Manual) nos cards do CRM.",
+      "FEAT: Extração inteligente de Cidade de interesse nos cards para melhor qualificação.",
+      "FIX: Correção de nomes de cidades incompletos (TECH -> Rio Preto, PAULO -> São Paulo).",
+      "UX: Novos badges elegantes nos cards do Kanban para visualização rápida."
+    ],
+    "author": "Antigravity"
+  },
+  {
     "version": "2.9.4",
     "date": "2026-02-10",
     "title": "Atualização de Endereço - W-Tech Lisboa",

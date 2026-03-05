@@ -268,6 +268,50 @@ const LeadCard: React.FC<{ lead: any, onClick: () => void, onMove?: any, onTasks
 
     const attendantName = lead.assignedTo && usersMap[lead.assignedTo] ? usersMap[lead.assignedTo].split(' ')[0] : 'S/ Atendente';
 
+    // Helper to parse source and city
+    const getLeadInfo = () => {
+        const ctx = lead.contextId || '';
+        let source = 'Site';
+        let city = lead.address_city || '';
+
+        if (ctx.startsWith('Quiz Completed')) {
+            source = 'Quiz';
+            if (!city) {
+                // Extract from "Quiz Completed: CURSO SUSPENSÃO SJRP [QUENTE]" -> SJRP
+                const match = ctx.match(/:\s*(.+?)\s*\[/);
+                const titlePart = match ? match[1] : ctx.split(':').pop() || '';
+                // Try to find known city patterns if address_city is missing
+                const upperCtx = ctx.toUpperCase();
+                if (upperCtx.includes('RIO PRETO') || upperCtx.includes('SJRP')) city = 'Rio Preto';
+                else if (upperCtx.includes('LISBOA')) city = 'Lisboa';
+                else city = titlePart.split(' ').pop() || '';
+            }
+        } else if (ctx.startsWith('LP:')) {
+            source = 'LP';
+            if (!city) {
+                // Extract from "LP: Curso de Suspensão W-TECH (curso-suspensao-sjrp)" -> SJRP
+                const match = ctx.match(/\((.+?)\)/);
+                const slugPart = match ? match[1] : '';
+                if (slugPart) {
+                    city = slugPart.split('-').pop()?.toUpperCase() || '';
+                }
+            }
+        } else if (ctx.includes('EUROPA') || ctx.includes('LISBOA')) {
+            source = 'Evento';
+            city = city || 'Lisboa';
+        } else if (ctx === 'Manual') {
+            source = 'Manual';
+        }
+
+        // Fix common incomplete city markers
+        if (city.toUpperCase() === 'TECH') city = 'Rio Preto';
+        if (city.toUpperCase() === 'PAULO') city = 'São Paulo';
+
+        return { source, city };
+    };
+
+    const { source, city } = getLeadInfo();
+
     return (
         <div
             onClick={onClick}
@@ -285,10 +329,21 @@ const LeadCard: React.FC<{ lead: any, onClick: () => void, onMove?: any, onTasks
             <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: accentColor }}></div>
 
             {/* Header / Name */}
-            <div className="flex justify-between items-start pl-3 mb-2">
-                <div>
+            <div className="flex justify-between items-start pl-3 mb-1">
+                <div className="flex-1 min-w-0">
                      <h4 className="font-bold text-gray-800 dark:text-gray-200 text-sm line-clamp-1 pr-2">{lead.name}</h4>
-                     {/* Tags/badges if any */}
+                     
+                     {/* Source & City Line */}
+                     <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className="text-[9px] font-black bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded text-gray-500 dark:text-gray-400 uppercase tracking-tighter">
+                            {source}
+                        </span>
+                        {city && (
+                            <span className="text-[9px] font-black bg-wtech-gold/10 px-1.5 py-0.5 rounded text-wtech-gold uppercase tracking-tighter border border-wtech-gold/20">
+                                {city}
+                            </span>
+                        )}
+                     </div>
                 </div>
                  {/* Quick Move Arrow */}
                 <div className="flex gap-1">
