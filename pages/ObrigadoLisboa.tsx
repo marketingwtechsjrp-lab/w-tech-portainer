@@ -126,7 +126,7 @@ const ObrigadoLisboa: React.FC = () => {
                                 </li>
                                 <li className="flex gap-3 text-sm font-medium">
                                     <span className="text-wtech-red font-bold">03.</span>
-                                    <span>Salve a data: 25 de Abril de 2026, na sede da Liqui Moly.</span>
+                                    <span>Salve a data: 25–26 de Abril de 2026, na sede da Liqui Moly.</span>
                                 </li>
                             </ul>
                         </div>

@@ -90,7 +90,7 @@ const LPWTechLisboa: React.FC = () => {
             
             {/* TOP BAR / URGENCY */}
             <div className="bg-wtech-red text-white text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-center py-2.5 px-4 sticky top-0 z-50 shadow-2xl">
-                🇵🇹 Lisboa 2026: Vagas Limitadas para a Formação Definitiva
+                🔥 ÚLTIMAS VAGAS: CURSO LISBOA 25–26 DE ABRIL
             </div>
 
             {/* NAVIGATION / LOGOS */}
@@ -120,7 +120,7 @@ const LPWTechLisboa: React.FC = () => {
                         className="inline-flex items-center gap-2 border border-wtech-red/30 bg-wtech-red/10 backdrop-blur-xl px-5 py-2 rounded-full mb-8 shadow-xl"
                     >
                         <Zap size={14} className="text-wtech-red animate-pulse" />
-                        <span className="text-[10px] md:text-sm font-black uppercase tracking-[0.3em] text-white">Lisboa | 25 e 26 de Abril 2026</span>
+                        <span className="text-[10px] md:text-sm font-black uppercase tracking-[0.3em] text-white">Lisboa | 25–26 de Abril</span>
                     </motion.div>
 
                     <motion.h1
@@ -380,7 +380,7 @@ const LPWTechLisboa: React.FC = () => {
                 <div className="container mx-auto px-6 relative z-10">
                     <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
                         <div>
-                            <h2 className="text-5xl md:text-7xl font-black uppercase mb-8 tracking-tighter leading-[0.9]">Garanta a<br /><span className="text-wtech-red text-6xl md:text-8xl">Sua Vaga</span></h2>
+                            <h2 className="text-5xl md:text-7xl font-black uppercase mb-8 tracking-tighter leading-[0.9]">Últimas Vagas<br /><span className="text-wtech-red text-6xl md:text-8xl">Disponíveis</span></h2>
                             <p className="text-gray-400 text-lg mb-10 leading-relaxed max-w-md">
                                 As vagas são preenchidas por ordem de candidatura validada. A nossa equipa entrará em contacto para os próximos passos.
                             </p>

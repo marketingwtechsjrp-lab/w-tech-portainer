@@ -104,7 +104,7 @@ const WTechLisboa: React.FC = () => {
             
             {/* TOP BAR */}
             <div className="bg-wtech-red text-white text-[10px] md:text-xs font-black uppercase tracking-widest text-center py-2 px-4">
-                🇵🇹 Lisboa 2026: MATRÍCULAS ABERTAS - INSCREVA-SE AGORA NA ÚNICA EDIÇÃO EUROPA
+                🔥 ÚLTIMAS VAGAS: MATRÍCULAS QUASE ENCERRANDO PARA 25–26 DE ABRIL
             </div>
 
             {/* NAVIGATION / LOGOS */}
@@ -192,7 +192,7 @@ const WTechLisboa: React.FC = () => {
                     <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">
                         <div className="py-12 md:px-8 text-center">
                             <Calendar className="mx-auto text-wtech-red mb-4" size={32} />
-                            <h3 className="text-xl font-black uppercase mb-2">25 e 26 Abril</h3>
+                            <h3 className="text-xl font-black uppercase mb-2">25–26 Abril</h3>
                             <p className="text-gray-500 text-sm">Dois dias de imersão total</p>
                         </div>
                         <div className="py-12 md:px-8 text-center">
@@ -461,7 +461,7 @@ const WTechLisboa: React.FC = () => {
                         <div className="flex flex-col md:flex-row items-center justify-between gap-12 relative z-10">
                             <div className="w-full md:w-1/3 text-center md:text-left">
                                 <h4 className="text-3xl font-black text-white uppercase mb-4 tracking-tighter">Rotina de <span className="text-wtech-red italic">Imersão</span></h4>
-                                <p className="text-gray-500 text-sm leading-relaxed mb-6 font-medium font-italic italic">Sábado e Domingo, 25 e 26 de Abril.</p>
+                                <p className="text-gray-500 text-sm leading-relaxed mb-6 font-medium font-italic italic">Sábado e Domingo, 25–26 de Abril.</p>
                                 <div className="inline-flex items-center gap-2 bg-white/5 px-6 py-3 rounded-full border border-white/10 text-[10px] font-black uppercase tracking-widest text-gray-400">
                                     <Settings className="animate-spin-slow text-wtech-gold" size={14} /> Almoço livre (Sugerido no Sintra Park)
                                 </div>
@@ -588,7 +588,7 @@ const WTechLisboa: React.FC = () => {
                                 transition={{ duration: 0.8 }}
                             >
                                 <div className="inline-block bg-wtech-red text-white text-[10px] font-black uppercase px-5 py-1.5 mb-8 rounded-full tracking-[0.4em] italic animate-bounce shadow-[0_10px_30px_rgba(230,0,0,0.4)]">
-                                    Matrícula Direta Aberta
+                                    Últimas Vagas Disponíveis
                                 </div>
                                 <h2 className="text-6xl lg:text-9xl font-black uppercase mb-8 tracking-tighter leading-[0.75] italic">
                                     CONQUISTE O<br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-wtech-red to-red-600 block mt-2 whitespace-nowrap">SEU LUGAR</span>
