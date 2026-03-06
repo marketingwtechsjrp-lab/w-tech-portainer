@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Users, Settings, Plus, MoreVertical, X, Save, Clock, AlertTriangle, Thermometer, TrendingUp, Search, Filter, List, KanbanSquare, Globe, GraduationCap, Phone, MessageCircle, CheckCircle, ShoppingBag, Banknote, Calendar, ArrowRight, Copy, Trash2, Share2, RefreshCw } from 'lucide-react';
+import { Users, Settings, Plus, MoreVertical, X, Save, Clock, AlertTriangle, Thermometer, TrendingUp, Search, Filter, List, KanbanSquare, Globe, GraduationCap, Phone, MessageCircle, CheckCircle, ShoppingBag, Banknote, Calendar, ArrowRight, Copy, Trash2, Share2, RefreshCw, CheckSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../../lib/supabaseClient';
 import { useAuth } from '../../../context/AuthContext';
@@ -116,7 +116,7 @@ const FunnelChart = ({ leads }: { leads: Lead[] }) => {
 };
 
 
-const KanbanColumn = ({ title, status, leads, onMove, onDropLead, onLeadClick, onTasks, usersMap }: any) => {
+const KanbanColumn = ({ title, status, leads, onMove, onDropLead, onLeadClick, onTasks, usersMap, selectedLeadIds, onToggleSelection }: any) => {
     const { draggedId } = React.useContext(DragContext);
 
     const handleDrop = (e: React.DragEvent) => {
@@ -161,7 +161,28 @@ const KanbanColumn = ({ title, status, leads, onMove, onDropLead, onLeadClick, o
             <div className={`p-4 rounded-t-2xl flex flex-col gap-2 ${status === 'New' || status === 'Converted' ? 'shadow-md' : ''} ${statusColors[status] || 'bg-white dark:bg-[#111] text-gray-800 dark:text-gray-100'}`}>
                 <div className="flex justify-between items-center">
                     <h3 className="font-bold text-sm uppercase tracking-wider">{title}</h3>
-                    <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs font-bold">{leads.length}</span>
+                    <div className="flex items-center gap-2">
+                        <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs font-bold">{leads.length}</span>
+                        {leads.length > 0 && (
+                            <button 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    const allInColSelected = leads.every((l: any) => selectedLeadIds.has(l.id));
+                                    leads.forEach((l: any) => {
+                                        if (allInColSelected) {
+                                            if (selectedLeadIds.has(l.id)) onToggleSelection(l.id);
+                                        } else {
+                                            if (!selectedLeadIds.has(l.id)) onToggleSelection(l.id);
+                                        }
+                                    });
+                                }}
+                                className="hover:scale-110 transition-all opacity-60 hover:opacity-100"
+                                title={leads.every((l: any) => selectedLeadIds.has(l.id)) ? "Desmarcar Todos" : "Selecionar Todos"}
+                            >
+                                <CheckSquare size={14} className={leads.every((l: any) => selectedLeadIds.has(l.id)) ? "text-white" : ""} />
+                            </button>
+                        )}
+                    </div>
                 </div>
                 {/* Stats Summary */}
                 <div className="flex items-center gap-2 text-[10px] font-medium opacity-80">
@@ -183,7 +204,16 @@ const KanbanColumn = ({ title, status, leads, onMove, onDropLead, onLeadClick, o
             {/* Cards Container */}
             <div className="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar">
                 {leads.map((lead: any) => (
-                    <LeadCard key={lead.id} lead={lead} onClick={() => onLeadClick(lead)} onMove={onDropLead} onTasks={onTasks} usersMap={usersMap} />
+                    <LeadCard 
+                        key={lead.id} 
+                        lead={lead} 
+                        onClick={() => onLeadClick(lead)} 
+                        onMove={onDropLead} 
+                        onTasks={onTasks} 
+                        usersMap={usersMap}
+                        isSelected={selectedLeadIds.has(lead.id)}
+                        onToggleSelection={() => onToggleSelection(lead.id)}
+                    />
                 ))}
                 {leads.length === 0 && (
                     <div className="text-center py-8 text-gray-400 dark:text-gray-600 text-xs italic">
@@ -228,7 +258,15 @@ const useTimeInStatus = (dateString: string) => {
 import { Badge } from '@/components/ui/badge';
 import { Edit } from 'lucide-react';
 
-const LeadCard: React.FC<{ lead: any, onClick: () => void, onMove?: any, onTasks: (lead: any) => void, usersMap: Record<string, string> }> = ({ lead, onClick, onMove, onTasks, usersMap }) => {
+const LeadCard: React.FC<{ 
+    lead: any, 
+    onClick: () => void, 
+    onMove?: any, 
+    onTasks: (lead: any) => void, 
+    usersMap: Record<string, string>,
+    isSelected: boolean,
+    onToggleSelection: () => void
+}> = ({ lead, onClick, onMove, onTasks, usersMap, isSelected, onToggleSelection }) => {
     const { setDraggedId } = React.useContext(DragContext);
     const [isDragging, setIsDragging] = React.useState(false);
 
@@ -322,9 +360,21 @@ const LeadCard: React.FC<{ lead: any, onClick: () => void, onMove?: any, onTasks
                 relative bg-white dark:bg-[#222]/80 p-3 rounded-xl border border-gray-100 dark:border-gray-800/50 
                 hover:shadow-lg transition-all cursor-move group overflow-hidden
                 ${isLongWait ? 'ring-1 ring-red-500/20' : ''}
-                hover:border-wtech-gold/30
+                ${isSelected ? 'ring-2 ring-wtech-gold border-wtech-gold/50 bg-wtech-gold/5 dark:bg-wtech-gold/10' : 'hover:border-wtech-gold/30'}
             `}
         >
+            {/* Selection Checkbox Overlay (Visible always if selected, or on hover) */}
+            <div 
+                onClick={(e) => { e.stopPropagation(); onToggleSelection(); }}
+                className={`absolute right-2 top-2 z-30 flex items-center justify-center w-5 h-5 rounded border transition-all cursor-pointer shadow-sm
+                    ${isSelected 
+                        ? 'bg-wtech-gold border-wtech-gold text-black scale-110 shadow-wtech-gold/20' 
+                        : 'bg-white/80 dark:bg-black/80 border-gray-200 dark:border-gray-700 opacity-0 group-hover:opacity-100 hover:border-wtech-gold'
+                    }`}
+            >
+                {isSelected && <CheckCircle size={14} strokeWidth={3} />}
+            </div>
+
             {/* Left Accent Border */}
             <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: accentColor }}></div>
 
@@ -436,6 +486,283 @@ interface CRMViewProps {
     onConvertLead?: (lead: Lead) => void;
 }
 
+const NewLeadModal = ({ isOpen, onClose, onSave }: any) => {
+    const [form, setForm] = useState({ name: '', phone: '', email: '', cpf: '', t_shirt_size: '', value: 0 }); // Added value
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-[#1A1A1A] p-6 rounded-2xl w-full max-w-md shadow-2xl">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-bold dark:text-white">Novo Lead</h3>
+                    <button onClick={onClose}><X className="dark:text-white" /></button>
+                </div>
+                <div className="space-y-4">
+                    <input autoFocus placeholder="Nome Completo" className="w-full p-3 bg-gray-100 dark:bg-[#333] rounded-lg dark:text-white" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+                    <input placeholder="Telefone" className="w-full p-3 bg-gray-100 dark:bg-[#333] rounded-lg dark:text-white" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} />
+                    <input placeholder="Email (Opcional)" className="w-full p-3 bg-gray-100 dark:bg-[#333] rounded-lg dark:text-white" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                        <input placeholder="CPF" className="w-full p-3 bg-gray-100 dark:bg-[#333] rounded-lg dark:text-white" value={form.cpf} onChange={e => setForm({...form, cpf: e.target.value})} />
+                        <select className="w-full p-3 bg-gray-100 dark:bg-[#333] rounded-lg dark:text-white" value={form.t_shirt_size} onChange={e => setForm({...form, t_shirt_size: e.target.value})}>
+                            <option value="">Tamanho Camiseta</option>
+                            <option value="P">P</option>
+                            <option value="M">M</option>
+                            <option value="G">G</option>
+                            <option value="GG">GG</option>
+                            <option value="EXG">EXG</option>
+                        </select>
+                    </div>
+
+                    {/* Value Input */}
+                    <div>
+                        <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Valor Potencial (R$)</label>
+                        <input 
+                            type="number" 
+                            placeholder="0,00" 
+                            className="w-full p-3 bg-gray-100 dark:bg-[#333] rounded-lg dark:text-white font-mono" 
+                            value={form.value} 
+                            onChange={e => setForm({...form, value: Number(e.target.value)})} 
+                        />
+                    </div>
+                </div>
+                <button onClick={() => onSave(form)} className="w-full bg-wtech-gold text-black font-bold py-3 rounded-xl mt-6">
+                    Criar Lead
+                </button>
+            </motion.div>
+        </div>
+    );
+};
+
+const EditLeadModal = ({ lead, isOpen, onClose, onSave, onDelete, onTasks, users }: any) => {
+    const [form, setForm] = useState({ ...lead });
+    // Tags Local State for Modal
+    const [tagInput, setTagInput] = useState('');
+
+    const generateCode = (name: string) => {
+        const first = name.substring(0, 3).toUpperCase();
+        const nums = Math.floor(Math.random() * 90 + 10);
+        const letters = Array(3).fill(0).map(() => String.fromCharCode(65 + Math.floor(Math.random() * 26))).join('');
+        return `${first}-${nums}${letters}`;
+    };
+
+    const handleCopyLink = () => {
+        const url = `${window.location.origin}/#/meus-pedidos?code=${form.client_code || lead.client_code}`;
+        navigator.clipboard.writeText(url);
+        alert('Link copiado! Envie para o cliente: ' + url);
+    };
+
+    const handleRegenerateCode = () => {
+        const newCode = generateCode(form.name || 'CLIENTE');
+        setForm(prev => ({ ...prev, client_code: newCode }));
+    };
+
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+            <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="bg-white dark:bg-[#1A1A1A] rounded-2xl w-full max-w-2xl shadow-2xl h-[80vh] flex flex-col">
+                <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
+                    <div>
+                        <h3 className="text-xl font-black dark:text-white">{form.name}</h3>
+                        <p className="text-sm text-gray-500">Editando informações do lead.</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <button 
+                            onClick={() => onTasks(form)}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold"
+                        >
+                            <Clock size={16} /> Tarefas
+                        </button>
+                        <button 
+                            onClick={() => {
+                                if (window.confirm('Tem certeza que deseja excluir este lead?')) {
+                                    onDelete();
+                                }
+                            }}
+                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors rounded-lg"
+                            title="Excluir Lead"
+                        >
+                            <Trash2 size={20} />
+                        </button>
+                        <button onClick={onClose} className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors"><X size={24} className="dark:text-white" /></button>
+                    </div>
+                </div>
+                
+                <div className="p-6 overflow-y-auto flex-1 space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="col-span-2">
+                             <label className="text-xs font-bold text-gray-500 uppercase">Status</label>
+                             <select 
+                                className="w-full p-3 bg-gray-50 dark:bg-[#333] rounded-lg mt-1 dark:text-white font-bold"
+                                value={form.status}
+                                onChange={e => setForm({...form, status: e.target.value})}
+                             >
+                                <option value="New">Novo</option>
+                                <option value="Contacted">Contactado</option>
+                                <option value="Qualified">Qualificado</option>
+                                <option value="Negotiating">Em Negociação</option>
+                                <option value="Converted">Ganhos / Pagar</option>
+                                <option value="Matriculated">Matriculado</option>
+                                <option value="Cold">Frio / Espera</option>
+                                <option value="Rejected">Perdido</option>
+                             </select>
+                        </div>
+                        
+                        <div>
+                            <label className="text-xs font-bold text-gray-500 uppercase">Telefone</label>
+                            <input className="w-full p-3 bg-gray-50 dark:bg-[#333] rounded-lg mt-1 dark:text-white" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} />
+                        </div>
+                        <div>
+                            <label className="text-xs font-bold text-gray-500 uppercase">Email</label>
+                            <input className="w-full p-3 bg-gray-50 dark:bg-[#333] rounded-lg mt-1 dark:text-white" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
+                        </div>
+                        
+                        <div>
+                            <label className="text-xs font-bold text-gray-500 uppercase">CPF</label>
+                            <input className="w-full p-3 bg-gray-50 dark:bg-[#333] rounded-lg mt-1 dark:text-white" value={form.cpf || ''} onChange={e => setForm({...form, cpf: e.target.value})} />
+                        </div>
+                        <div>
+                            <label className="text-xs font-bold text-gray-500 uppercase">Tamanho Camiseta</label>
+                            <select className="w-full p-3 bg-gray-50 dark:bg-[#333] rounded-lg mt-1 dark:text-white" value={form.t_shirt_size || ''} onChange={e => setForm({...form, t_shirt_size: e.target.value})}>
+                                <option value="">Não informado</option>
+                                <option value="P">P</option>
+                                <option value="M">M</option>
+                                <option value="G">G</option>
+                                <option value="GG">GG</option>
+                                <option value="EXG">EXG</option>
+                            </select>
+                        </div>
+
+                        {/* Client Portal Access Link */}
+                        <div className="col-span-2 bg-wtech-black/5 dark:bg-white/5 p-4 rounded-xl border border-dashed border-gray-300 dark:border-gray-700">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <h4 className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">Código de Acesso</h4>
+                                    <p className="text-[10px] text-gray-400 mt-1">Acesso ao portal (Meus Pedidos).</p>
+                                </div>
+                                <div className="text-right flex items-center gap-2">
+                                    <p className={`text-lg font-black font-mono tracking-wider ${form.client_code ? 'text-wtech-gold' : 'text-gray-400 italic text-sm'}`}>
+                                        {form.client_code || 'Não definido'}
+                                    </p>
+                                    <div className="flex gap-1">
+                                        <button 
+                                            onClick={handleRegenerateCode}
+                                            className="bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 px-2 py-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-colors flex items-center gap-2"
+                                            title="Gerar Novo Código"
+                                        >
+                                            <RefreshCw size={14} className={!form.client_code ? 'animate-pulse text-blue-500' : ''} />
+                                            {!form.client_code && <span className="text-[10px] font-bold">GERAR</span>}
+                                        </button>
+                                        {form.client_code && (
+                                            <button 
+                                                onClick={handleCopyLink}
+                                                className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors flex items-center gap-1"
+                                                title="Copiar Link de Acesso"
+                                            >
+                                                <Share2 size={14} /> Link
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div className="col-span-2 bg-green-50 dark:bg-green-900/20 p-4 rounded-xl border border-green-100 dark:border-green-900/50">
+                             <label className="text-xs font-black text-green-700 dark:text-green-400 uppercase flex items-center gap-2">
+                                <Banknote size={14}/> Valor da Venda (R$)
+                             </label>
+                             <input 
+                                type="number"
+                                className="w-full p-3 bg-white dark:bg-[#222] rounded-lg mt-1 dark:text-white font-mono text-lg font-bold" 
+                                value={form.value} 
+                                onChange={e => setForm({...form, value: Number(e.target.value)})} 
+                             />
+                             <p className="text-[10px] text-green-600 mt-1">
+                                * Ao mover para "Ganho" ou "Matriculado", este valor será lançado automaticamente no Fluxo de Caixa.
+                             </p>
+                        </div>
+
+                        <div className="col-span-2">
+                            <label className="text-xs font-bold text-gray-500 uppercase">Responsável</label>
+                            <select 
+                                className="w-full p-3 bg-gray-50 dark:bg-[#333] rounded-lg mt-1 dark:text-white"
+                                value={form.assignedTo || ''}
+                                onChange={e => setForm({...form, assignedTo: e.target.value || null})}
+                            >
+                                <option value="">Sem dono</option>
+                                {users.map((u: any) => (
+                                    <option key={u.id} value={u.id}>{u.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="col-span-2">
+                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Notas Internas</label>
+                            <textarea
+                                className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:border-wtech-gold focus:ring-1 focus:ring-wtech-gold outline-none min-h-[100px]"
+                                placeholder="Observações sobre o lead..."
+                                value={form.internalNotes || ''}
+                                onChange={e => setForm({ ...form, internalNotes: e.target.value })}
+                            />
+                        </div>
+
+                        <div className="col-span-2">
+                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Tags</label>
+                            <div className="flex flex-wrap gap-2 mb-2">
+                                {form.tags?.map((tag: string, idx: number) => (
+                                    <span key={idx} className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center gap-1 border border-gray-200">
+                                        {tag}
+                                        <button onClick={() => setForm({...form, tags: form.tags.filter((_:any, i:any) => i !== idx)})} className="hover:text-red-500"><X size={12} /></button>
+                                    </span>
+                                ))}
+                            </div>
+                            <div className="flex gap-2">
+                                <input
+                                    className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-wtech-gold"
+                                    placeholder="Adicionar tag... (Enter)"
+                                    value={tagInput}
+                                    onChange={e => setTagInput(e.target.value)}
+                                    onKeyDown={e => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            if (tagInput.trim()) {
+                                                setForm({...form, tags: [...(form.tags || []), tagInput.trim()]});
+                                                setTagInput('');
+                                            }
+                                        }
+                                    }}
+                                />
+                                <button
+                                    onClick={() => {
+                                        if (tagInput.trim()) {
+                                            setForm({...form, tags: [...(form.tags || []), tagInput.trim()]});
+                                            setTagInput('');
+                                        }
+                                    }}
+                                    className="px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                                >
+                                    <Plus size={16}/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="p-6 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-[#111] flex justify-end gap-3 rounded-b-2xl">
+                     <button onClick={onClose} className="px-6 py-3 font-bold text-gray-500 hover:text-gray-700 dark:text-gray-400">Cancelar</button>
+                     <button onClick={() => onSave(form)} className="px-8 py-3 bg-wtech-black text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2">
+                        <Save size={18} /> Salvar Alterações
+                     </button>
+                </div>
+            </motion.div>
+        </div>
+    );
+};
+
 const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead, permissions }) => {
     const [leads, setLeads] = useState<Lead[]>([]);
     const [draggedId, setDraggedId] = useState<string | null>(null);
@@ -470,6 +797,48 @@ const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead
     const [editingLead, setEditingLead] = useState<any | null>(null);
     const [editForm, setEditForm] = useState({ assignedTo: '', internalNotes: '', tags: [] as string[] });
     const [tagInput, setTagInput] = useState('');
+
+    // Bulk Selection State
+    const [selectedLeadIds, setSelectedLeadIds] = useState<Set<string>>(new Set());
+
+    const toggleLeadSelection = (leadId: string) => {
+        setSelectedLeadIds(prev => {
+            const next = new Set(prev);
+            if (next.has(leadId)) next.delete(leadId);
+            else next.add(leadId);
+            return next;
+        });
+    };
+
+    const clearSelection = () => setSelectedLeadIds(new Set());
+
+    const handleBulkAssign = async (userId: string) => {
+        if (selectedLeadIds.size === 0) return;
+        
+        const count = selectedLeadIds.size;
+        const ids = Array.from(selectedLeadIds);
+        const now = new Date().toISOString();
+
+        // Optimistic Update
+        setLeads(prev => prev.map(l => ids.includes(l.id) ? { ...l, assignedTo: userId, updated_at: now } : l));
+        
+        const { error } = await supabase
+            .from('SITE_Leads')
+            .update({ 
+                assigned_to: userId, 
+                updated_at: now 
+            })
+            .in('id', ids);
+
+        if (!error) {
+            notificationRef.current?.createNotification('success', 'Leads Atribuídos', `${count} leads foram atribuídos a ${usersMap[userId] || 'outro atendente'}.`);
+            setSelectedLeadIds(new Set());
+        } else {
+            console.error("Bulk Assign Error:", error);
+            alert('Erro ao atribuir leads em massa: ' + error.message);
+            fetchData(); // Revert
+        }
+    };
 
     const handleCreateLead = async (formData?: any) => {
         // Support both state-based (legacy) and argument-based (modal) calls
@@ -1079,7 +1448,11 @@ const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead
 
             // 3. User Filter
             if (selectedUserFilter && selectedUserFilter !== 'All') {
-                if (String(l.assignedTo) !== String(selectedUserFilter)) return false;
+                if (selectedUserFilter === 'None') {
+                    if (l.assignedTo) return false;
+                } else if (String(l.assignedTo) !== String(selectedUserFilter)) {
+                    return false;
+                }
             }
 
             // 4. Search Filter
@@ -1103,7 +1476,79 @@ const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead
 
     return (
         <DragContext.Provider value={{ draggedId, setDraggedId }}>
-            <div className="h-full flex flex-col w-full max-w-full overflow-hidden">
+            <div className="h-full flex flex-col w-full max-w-full overflow-hidden relative">
+                
+                {/* Floating Bulk Actions Bar */}
+                <AnimatePresence>
+                    {selectedLeadIds.size > 0 && (
+                        <motion.div 
+                            initial={{ y: 100, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: 100, opacity: 0 }}
+                            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] bg-white dark:bg-[#1A1A1A] border border-wtech-gold/30 shadow-2xl rounded-2xl px-6 py-4 flex items-center gap-6 min-w-[500px]"
+                        >
+                            <div className="flex items-center gap-3 pr-6 border-r border-gray-100 dark:border-gray-800">
+                                <div className="w-10 h-10 rounded-xl bg-wtech-gold/10 flex items-center justify-center text-wtech-gold font-black">
+                                    {selectedLeadIds.size}
+                                </div>
+                                <div>
+                                    <h4 className="text-sm font-black dark:text-white uppercase leading-none">Selecionados</h4>
+                                    <p className="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-tight">Cuidado ao realizar ações</p>
+                                </div>
+                            </div>
+
+                            <div className="flex-1 flex gap-2">
+                                <div className="relative group/bulk">
+                                    <button className="flex items-center gap-2 bg-wtech-black hover:bg-black text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-lg active:scale-95">
+                                        <Users size={14} />
+                                        Atribuir a Atendente
+                                    </button>
+                                    
+                                    {/* Attendant Dropdown */}
+                                    <div className="absolute bottom-full left-0 mb-2 w-64 opacity-0 invisible group-hover/bulk:opacity-100 group-hover/bulk:visible transition-all duration-300 z-[101]">
+                                        <div className="bg-white dark:bg-[#111] border border-gray-100 dark:border-gray-800 shadow-2xl rounded-xl p-2 max-h-64 overflow-y-auto custom-scrollbar">
+                                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest p-2 mb-1 border-b border-gray-50 dark:border-gray-800/50">Selecionar Atendente</p>
+                                            {usersList.map((u) => (
+                                                <button 
+                                                    key={u.id} 
+                                                    onClick={() => handleBulkAssign(u.id)}
+                                                    className="w-full text-left px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-300 transition-colors flex items-center gap-3"
+                                                >
+                                                    <div className="w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-[10px] uppercase">
+                                                        {u.name.charAt(0)}
+                                                    </div>
+                                                    {u.name}
+                                                </button>
+                                            ))}
+                                            {usersList.length === 0 && <p className="p-4 text-center text-xs text-gray-400 italic">Nenhum usuário encontrado</p>}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button 
+                                    onClick={() => {
+                                        if (window.confirm(`Deseja remover ${selectedLeadIds.size} leads permanentemente?`)) {
+                                            // Handle bulk delete if needed later, for now just focus on assignment
+                                            alert("Função disponível em breve. Focando na atribuição agora.");
+                                        }
+                                    }}
+                                    className="p-2.5 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-all"
+                                    title="Remover Selecionados"
+                                >
+                                    <Trash2 size={18} />
+                                </button>
+                            </div>
+
+                            <button 
+                                onClick={clearSelection}
+                                className="text-[10px] font-black uppercase text-gray-400 hover:text-gray-600 transition-colors"
+                            >
+                                Limpar
+                            </button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
                 {/* Funnel Overview */}
                 <FunnelChart leads={filteredLeads} />
 
@@ -1147,12 +1592,13 @@ const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead
                                 <div className="flex items-center gap-2 bg-gray-50 dark:bg-[#222] border border-gray-200 dark:border-gray-700 px-3 py-2 rounded-lg cursor-pointer hover:bg-white dark:hover:bg-[#111] transition-colors">
                                     <Users size={14} className="text-gray-400" />
                                     <span className="text-xs font-bold text-gray-600 dark:text-gray-300 truncate max-w-[150px]">
-                                        {selectedUserFilter === 'All' ? 'Todos os Usuários' : (usersMap[selectedUserFilter] || 'Usuário')}
+                                        {selectedUserFilter === 'All' ? 'Todos os Usuários' : selectedUserFilter === 'None' ? 'Sem Atendente' : (usersMap[selectedUserFilter] || 'Usuário')}
                                     </span>
                                 </div>
                                 <div className="absolute top-full left-0 pt-2 w-64 hidden group-hover:block z-50">
                                     <div className="bg-white dark:bg-[#1A1A1A] shadow-xl rounded-xl border border-gray-100 dark:border-gray-700 p-2 max-h-64 overflow-y-auto custom-scrollbar">
-                                        <button onClick={() => setSelectedUserFilter('All')} className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-200">Todos</button>
+                                        <button onClick={() => setSelectedUserFilter('All')} className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-200 uppercase">Todos</button>
+                                        <button onClick={() => setSelectedUserFilter('None')} className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg text-xs font-bold text-orange-600 dark:text-orange-400 uppercase">Fila (Sem Dono)</button>
                                         {usersList.map((u) => (
                                             <button key={u.id} onClick={() => setSelectedUserFilter(u.id)} className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg text-xs text-gray-600 dark:text-gray-400 truncate">
                                                 {u.name}
@@ -1238,6 +1684,8 @@ const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead
                             onLeadClick={handleLeadClick}
                             onTasks={setSelectedLeadForTasks}
                             usersMap={usersMap}
+                            selectedLeadIds={selectedLeadIds}
+                            onToggleSelection={toggleLeadSelection}
                         />
                         <KanbanColumn
                             title="Em Atendimento"
@@ -1248,6 +1696,8 @@ const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead
                             onLeadClick={handleLeadClick}
                             onTasks={setSelectedLeadForTasks}
                             usersMap={usersMap}
+                            selectedLeadIds={selectedLeadIds}
+                            onToggleSelection={toggleLeadSelection}
                         />
                         <KanbanColumn
                             title="Negociação"
@@ -1258,6 +1708,8 @@ const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead
                             onLeadClick={handleLeadClick}
                             onTasks={setSelectedLeadForTasks}
                             usersMap={usersMap}
+                            selectedLeadIds={selectedLeadIds}
+                            onToggleSelection={toggleLeadSelection}
                         />
                         <KanbanColumn
                             title="Fechado / Ganho"
@@ -1268,6 +1720,8 @@ const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead
                             onLeadClick={handleLeadClick}
                             onTasks={setSelectedLeadForTasks}
                             usersMap={usersMap}
+                            selectedLeadIds={selectedLeadIds}
+                            onToggleSelection={toggleLeadSelection}
                         />
                         <KanbanColumn
                             title="Esfriou / Perdido"
@@ -1278,6 +1732,8 @@ const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead
                             onLeadClick={handleLeadClick}
                             onTasks={setSelectedLeadForTasks}
                             usersMap={usersMap}
+                            selectedLeadIds={selectedLeadIds}
+                            onToggleSelection={toggleLeadSelection}
                         />
                     </div>
                 ) : (
@@ -1314,10 +1770,24 @@ const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead
                                         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 
                                         return (
-                                            <tr key={lead.id} className="hover:bg-gray-50 transition-colors group cursor-pointer" onClick={() => handleLeadClick(lead)}>
+                                            <tr 
+                                                key={lead.id} 
+                                                className={`hover:bg-gray-50 transition-colors group cursor-pointer ${selectedLeadIds.has(lead.id) ? 'bg-wtech-gold/5 border-l-2 border-l-wtech-gold' : ''}`} 
+                                                onClick={() => handleLeadClick(lead)}
+                                            >
                                                 <td className="px-6 py-4">
-                                                    <div className="font-bold text-gray-900 group-hover:text-wtech-gold transition-colors">{lead.name}</div>
-                                                    <div className="text-xs text-gray-400">{new Date(lead.createdAt).toLocaleDateString()}</div>
+                                                    <div className="flex items-center gap-3">
+                                                        <div 
+                                                            onClick={(e) => { e.stopPropagation(); toggleLeadSelection(lead.id); }}
+                                                            className={`w-4 h-4 rounded border transition-all flex items-center justify-center ${selectedLeadIds.has(lead.id) ? 'bg-wtech-gold border-wtech-gold text-black' : 'bg-white border-gray-300'}`}
+                                                        >
+                                                            {selectedLeadIds.has(lead.id) && <CheckCircle size={10} strokeWidth={4} />}
+                                                        </div>
+                                                        <div>
+                                                            <div className="font-bold text-gray-900 group-hover:text-wtech-gold transition-colors">{lead.name}</div>
+                                                            <div className="text-xs text-gray-400">{new Date(lead.createdAt).toLocaleDateString()}</div>
+                                                        </div>
+                                                    </div>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="text-gray-600">{lead.email}</div>
@@ -1543,282 +2013,6 @@ const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead
 
 // Need to update EditLeadModal and NewLeadModal to include 'value' input field.
 
-const NewLeadModal = ({ isOpen, onClose, onSave }: any) => {
-    const [form, setForm] = useState({ name: '', phone: '', email: '', cpf: '', t_shirt_size: '', value: 0 }); // Added value
-
-    if (!isOpen) return null;
-
-    return (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white dark:bg-[#1A1A1A] p-6 rounded-2xl w-full max-w-md shadow-2xl">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl font-bold dark:text-white">Novo Lead</h3>
-                    <button onClick={onClose}><X className="dark:text-white" /></button>
-                </div>
-                <div className="space-y-4">
-                    <input autoFocus placeholder="Nome Completo" className="w-full p-3 bg-gray-100 dark:bg-[#333] rounded-lg dark:text-white" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
-                    <input placeholder="Telefone" className="w-full p-3 bg-gray-100 dark:bg-[#333] rounded-lg dark:text-white" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} />
-                    <input placeholder="Email (Opcional)" className="w-full p-3 bg-gray-100 dark:bg-[#333] rounded-lg dark:text-white" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                        <input placeholder="CPF" className="w-full p-3 bg-gray-100 dark:bg-[#333] rounded-lg dark:text-white" value={form.cpf} onChange={e => setForm({...form, cpf: e.target.value})} />
-                        <select className="w-full p-3 bg-gray-100 dark:bg-[#333] rounded-lg dark:text-white" value={form.t_shirt_size} onChange={e => setForm({...form, t_shirt_size: e.target.value})}>
-                            <option value="">Tamanho Camiseta</option>
-                            <option value="P">P</option>
-                            <option value="M">M</option>
-                            <option value="G">G</option>
-                            <option value="GG">GG</option>
-                            <option value="EXG">EXG</option>
-                        </select>
-                    </div>
-
-                    {/* Value Input */}
-                    <div>
-                        <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Valor Potencial (R$)</label>
-                        <input 
-                            type="number" 
-                            placeholder="0,00" 
-                            className="w-full p-3 bg-gray-100 dark:bg-[#333] rounded-lg dark:text-white font-mono" 
-                            value={form.value} 
-                            onChange={e => setForm({...form, value: Number(e.target.value)})} 
-                        />
-                    </div>
-                </div>
-                <button onClick={() => onSave(form)} className="w-full bg-wtech-gold text-black font-bold py-3 rounded-xl mt-6">
-                    Criar Lead
-                </button>
-            </motion.div>
-        </div>
-    );
-};
-
-const EditLeadModal = ({ lead, isOpen, onClose, onSave, onDelete, onTasks, users }: any) => {
-    const [form, setForm] = useState({ ...lead });
-    // Tags Local State for Modal
-    const [tagInput, setTagInput] = useState('');
-
-    const generateCode = (name: string) => {
-        const first = name.substring(0, 3).toUpperCase();
-        const nums = Math.floor(Math.random() * 90 + 10);
-        const letters = Array(3).fill(0).map(() => String.fromCharCode(65 + Math.floor(Math.random() * 26))).join('');
-        return `${first}-${nums}${letters}`;
-    };
-
-    const handleCopyLink = () => {
-        const url = `${window.location.origin}/#/meus-pedidos?code=${form.client_code || lead.client_code}`;
-        navigator.clipboard.writeText(url);
-        alert('Link copiado! Envie para o cliente: ' + url);
-    };
-
-    const handleRegenerateCode = () => {
-        const newCode = generateCode(form.name || 'CLIENTE');
-        setForm(prev => ({ ...prev, client_code: newCode }));
-    };
-
-
-    if (!isOpen) return null;
-
-    return (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-            <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="bg-white dark:bg-[#1A1A1A] rounded-2xl w-full max-w-2xl shadow-2xl h-[80vh] flex flex-col">
-                <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
-                    <div>
-                        <h3 className="text-xl font-black dark:text-white">{form.name}</h3>
-                        <p className="text-sm text-gray-500">Editando informações do lead.</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <button 
-                            onClick={() => onTasks(form)}
-                            className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 transition-colors text-xs font-bold"
-                        >
-                            <Clock size={16} /> Tarefas
-                        </button>
-                        <button 
-                            onClick={() => {
-                                if (window.confirm('Tem certeza que deseja excluir este lead?')) {
-                                    onDelete();
-                                }
-                            }}
-                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors rounded-lg"
-                            title="Excluir Lead"
-                        >
-                            <Trash2 size={20} />
-                        </button>
-                        <button onClick={onClose} className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors"><X size={24} className="dark:text-white" /></button>
-                    </div>
-                </div>
-                
-                <div className="p-6 overflow-y-auto flex-1 space-y-6">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="col-span-2">
-                             <label className="text-xs font-bold text-gray-500 uppercase">Status</label>
-                             <select 
-                                className="w-full p-3 bg-gray-50 dark:bg-[#333] rounded-lg mt-1 dark:text-white font-bold"
-                                value={form.status}
-                                onChange={e => setForm({...form, status: e.target.value})}
-                             >
-                                <option value="New">Novo</option>
-                                <option value="Contacted">Contactado</option>
-                                <option value="Qualified">Qualificado</option>
-                                <option value="Negotiating">Em Negociação</option>
-                                <option value="Converted">Ganhos / Pagar</option>
-                                <option value="Matriculated">Matriculado</option>
-                                <option value="Cold">Frio / Espera</option>
-                                <option value="Rejected">Perdido</option>
-                             </select>
-                        </div>
-                        
-                        <div>
-                            <label className="text-xs font-bold text-gray-500 uppercase">Telefone</label>
-                            <input className="w-full p-3 bg-gray-50 dark:bg-[#333] rounded-lg mt-1 dark:text-white" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} />
-                        </div>
-                        <div>
-                            <label className="text-xs font-bold text-gray-500 uppercase">Email</label>
-                            <input className="w-full p-3 bg-gray-50 dark:bg-[#333] rounded-lg mt-1 dark:text-white" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
-                        </div>
-                        
-                        <div>
-                            <label className="text-xs font-bold text-gray-500 uppercase">CPF</label>
-                            <input className="w-full p-3 bg-gray-50 dark:bg-[#333] rounded-lg mt-1 dark:text-white" value={form.cpf || ''} onChange={e => setForm({...form, cpf: e.target.value})} />
-                        </div>
-                        <div>
-                            <label className="text-xs font-bold text-gray-500 uppercase">Tamanho Camiseta</label>
-                            <select className="w-full p-3 bg-gray-50 dark:bg-[#333] rounded-lg mt-1 dark:text-white" value={form.t_shirt_size || ''} onChange={e => setForm({...form, t_shirt_size: e.target.value})}>
-                                <option value="">Não informado</option>
-                                <option value="P">P</option>
-                                <option value="M">M</option>
-                                <option value="G">G</option>
-                                <option value="GG">GG</option>
-                                <option value="EXG">EXG</option>
-                            </select>
-                        </div>
-
-                        {/* Client Portal Access Link */}
-                        <div className="col-span-2 bg-wtech-black/5 dark:bg-white/5 p-4 rounded-xl border border-dashed border-gray-300 dark:border-gray-700">
-                            <div className="flex justify-between items-center">
-                                <div>
-                                    <h4 className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">Código de Acesso</h4>
-                                    <p className="text-[10px] text-gray-400 mt-1">Acesso ao portal (Meus Pedidos).</p>
-                                </div>
-                                <div className="text-right flex items-center gap-2">
-                                    <p className={`text-lg font-black font-mono tracking-wider ${form.client_code ? 'text-wtech-gold' : 'text-gray-400 italic text-sm'}`}>
-                                        {form.client_code || 'Não definido'}
-                                    </p>
-                                    <div className="flex gap-1">
-                                        <button 
-                                            onClick={handleRegenerateCode}
-                                            className="bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 px-2 py-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-colors flex items-center gap-2"
-                                            title="Gerar Novo Código"
-                                        >
-                                            <RefreshCw size={14} className={!form.client_code ? 'animate-pulse text-blue-500' : ''} />
-                                            {!form.client_code && <span className="text-[10px] font-bold">GERAR</span>}
-                                        </button>
-                                        {form.client_code && (
-                                            <button 
-                                                onClick={handleCopyLink}
-                                                className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors flex items-center gap-1"
-                                                title="Copiar Link de Acesso"
-                                            >
-                                                <Share2 size={14} /> Link
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div className="col-span-2 bg-green-50 dark:bg-green-900/20 p-4 rounded-xl border border-green-100 dark:border-green-900/50">
-                             <label className="text-xs font-black text-green-700 dark:text-green-400 uppercase flex items-center gap-2">
-                                <Banknote size={14}/> Valor da Venda (R$)
-                             </label>
-                             <input 
-                                type="number"
-                                className="w-full p-3 bg-white dark:bg-[#222] rounded-lg mt-1 dark:text-white font-mono text-lg font-bold" 
-                                value={form.value} 
-                                onChange={e => setForm({...form, value: Number(e.target.value)})} 
-                             />
-                             <p className="text-[10px] text-green-600 mt-1">
-                                * Ao mover para "Ganho" ou "Matriculado", este valor será lançado automaticamente no Fluxo de Caixa.
-                             </p>
-                        </div>
-
-                        <div className="col-span-2">
-                            <label className="text-xs font-bold text-gray-500 uppercase">Responsável</label>
-                            <select 
-                                className="w-full p-3 bg-gray-50 dark:bg-[#333] rounded-lg mt-1 dark:text-white"
-                                value={form.assignedTo || ''}
-                                onChange={e => setForm({...form, assignedTo: e.target.value || null})}
-                            >
-                                <option value="">Sem dono</option>
-                                {users.map((u: any) => (
-                                    <option key={u.id} value={u.id}>{u.name}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="col-span-2">
-                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Notas Internas</label>
-                            <textarea
-                                className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:border-wtech-gold focus:ring-1 focus:ring-wtech-gold outline-none min-h-[100px]"
-                                placeholder="Observações sobre o lead..."
-                                value={form.internalNotes || ''}
-                                onChange={e => setForm({ ...form, internalNotes: e.target.value })}
-                            />
-                        </div>
-
-                        <div className="col-span-2">
-                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Tags</label>
-                            <div className="flex flex-wrap gap-2 mb-2">
-                                {form.tags?.map((tag: string, idx: number) => (
-                                    <span key={idx} className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full flex items-center gap-1 border border-gray-200">
-                                        {tag}
-                                        <button onClick={() => setForm({...form, tags: form.tags.filter((_:any, i:any) => i !== idx)})} className="hover:text-red-500"><X size={12} /></button>
-                                    </span>
-                                ))}
-                            </div>
-                            <div className="flex gap-2">
-                                <input
-                                    className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-wtech-gold"
-                                    placeholder="Adicionar tag... (Enter)"
-                                    value={tagInput}
-                                    onChange={e => setTagInput(e.target.value)}
-                                    onKeyDown={e => {
-                                        if (e.key === 'Enter') {
-                                            e.preventDefault();
-                                            if (tagInput.trim()) {
-                                                setForm({...form, tags: [...(form.tags || []), tagInput.trim()]});
-                                                setTagInput('');
-                                            }
-                                        }
-                                    }}
-                                />
-                                <button
-                                    onClick={() => {
-                                        if (tagInput.trim()) {
-                                            setForm({...form, tags: [...(form.tags || []), tagInput.trim()]});
-                                            setTagInput('');
-                                        }
-                                    }}
-                                    className="px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                                >
-                                    <Plus size={16}/>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="p-6 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-[#111] flex justify-end gap-3 rounded-b-2xl">
-                     <button onClick={onClose} className="px-6 py-3 font-bold text-gray-500 hover:text-gray-700 dark:text-gray-400">Cancelar</button>
-                     <button onClick={() => onSave(form)} className="px-8 py-3 bg-wtech-black text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2">
-                        <Save size={18} /> Salvar Alterações
-                     </button>
-                </div>
-            </motion.div>
-        </div>
-    );
-};
 
 
 export default CRMView;
