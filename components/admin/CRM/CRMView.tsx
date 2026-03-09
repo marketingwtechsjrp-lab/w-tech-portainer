@@ -10,6 +10,10 @@ import { SplashedPushNotifications, SplashedPushNotificationsHandle } from '@/co
 import LeadTaskSidebar from './LeadTaskSidebar';
 import { useRef } from 'react'; // Ensure useRef is imported
 import { BauhausCard } from '@/components/ui/bauhaus-card';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import * as XLSX from 'xlsx';
+import { FileDown, FileText, FileSpreadsheet } from 'lucide-react';
 
 // Helper for Drag & Drop
 const DragContext = React.createContext<{
@@ -1417,6 +1421,117 @@ const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead
         }
     };
 
+    const exportLeadsToPDF = (selectedOnly: boolean) => {
+        const leadsToExport = selectedOnly 
+            ? leads.filter(l => selectedLeadIds.has(l.id))
+            : filteredLeads;
+
+        if (leadsToExport.length === 0) {
+            alert("Nenhum lead encontrado para exportar.");
+            return;
+        }
+
+        const doc = new jsPDF('l', 'mm', 'a4'); // Landscape A4
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('pt-BR');
+        const timeStr = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+        // Header
+        doc.setFontSize(20);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Relatório de Leads CRM - W-TECH', 14, 20);
+        
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(100);
+        doc.text(`Gerado em: ${dateStr} às ${timeStr}`, 14, 27);
+        doc.text(`Total de registros: ${leadsToExport.length}`, 14, 32);
+
+        // Filter Info
+        let filterText = "Filtro: ";
+        if (selectedOnly) filterText += "Selecionados Manualmente";
+        else {
+            filterText += filterType === 'Period' ? `${filterPeriod === 9999 ? 'Todo o Período' : `Últimos ${filterPeriod} dias`}` : 
+                          filterType === 'Month' ? `Mês: ${selectedMonth}` : 'Período Customizado';
+            if (contextFilter !== 'All') filterText += ` | Origem: ${contextFilter}`;
+            if (selectedUserFilter !== 'All') filterText += ` | Atendente: ${usersMap[selectedUserFilter] || 'Sem Atendente'}`;
+        }
+        doc.text(filterText, 14, 37);
+
+        // Table
+        const tableHeaders = [['Nome', 'Telefone', 'E-mail', 'Origem', 'Data de Entrada', 'Status']];
+        const tableData = leadsToExport.map(l => [
+            l.name || 'N/A',
+            l.phone || 'N/A',
+            l.email || 'N/A',
+            l.contextId || 'N/A',
+            new Date(l.createdAt).toLocaleDateString('pt-BR'),
+            l.status || 'N/A'
+        ]);
+
+        autoTable(doc, {
+            startY: 45,
+            head: tableHeaders,
+            body: tableData,
+            theme: 'striped',
+            headStyles: { fillColor: [0, 0, 0], textColor: [255, 255, 255], fontStyle: 'bold' },
+            styles: { fontSize: 8, cellPadding: 2 },
+            columnStyles: {
+                0: { cellWidth: 50 }, // Name
+                1: { cellWidth: 35 }, // Phone
+                2: { cellWidth: 70 }, // Email
+                3: { cellWidth: 50 }, // Origin
+                4: { cellWidth: 35 }, // Date
+                5: { cellWidth: 30 }  // Status
+            }
+        });
+
+        doc.save(`leads_crm_wtech_${now.getTime()}.pdf`);
+        
+        if (notificationRef.current) {
+            notificationRef.current.createNotification('success', 'PDF Gerado', 'O relatório foi baixado com sucesso.');
+        }
+    };
+
+    const exportLeadsToCSV = (selectedOnly: boolean) => {
+        const leadsToExport = selectedOnly 
+            ? leads.filter(l => selectedLeadIds.has(l.id))
+            : filteredLeads;
+
+        if (leadsToExport.length === 0) {
+            alert("Nenhum lead encontrado para exportar.");
+            return;
+        }
+
+        const now = new Date();
+        
+        // Prepare data for XLSX
+        const data = leadsToExport.map(l => ({
+            'Nome': l.name || '',
+            'E-mail': l.email || '',
+            'Telefone': l.phone || '',
+            'CPF': l.cpf || '',
+            'Origem': l.contextId || '',
+            'Data de Entrada': new Date(l.createdAt).toLocaleDateString('pt-BR'),
+            'Status': l.status || '',
+            'Atribuído a': usersMap[l.assignedTo || ''] || 'Nenhum',
+            'Notas Internas': l.internalNotes || '',
+            'Cidade': l.address_city || ''
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Leads");
+        
+        // Generate CSV instead of XLSX if requested specifically, but XLSX is better for this.
+        // The user asked for CSV, so let's give them CSV.
+        XLSX.writeFile(wb, `leads_crm_wtech_${now.getTime()}.csv`, { bookType: 'csv' });
+
+        if (notificationRef.current) {
+            notificationRef.current.createNotification('success', 'CSV Gerado', 'O arquivo CSV foi baixado com sucesso.');
+        }
+    };
+
 
 
     // Filter Logic
@@ -1525,6 +1640,25 @@ const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead
                                     </div>
                                 </div>
 
+                                <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl">
+                                    <button 
+                                        onClick={() => exportLeadsToPDF(true)}
+                                        className="flex items-center gap-2 hover:bg-white dark:hover:bg-white/10 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg text-xs font-bold transition-all"
+                                        title="Exportar Selecionados para PDF"
+                                    >
+                                        <FileText size={14} className="text-red-500" />
+                                        PDF
+                                    </button>
+                                    <button 
+                                        onClick={() => exportLeadsToCSV(true)}
+                                        className="flex items-center gap-2 hover:bg-white dark:hover:bg-white/10 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg text-xs font-bold transition-all"
+                                        title="Exportar Selecionados para CSV"
+                                    >
+                                        <FileSpreadsheet size={14} className="text-green-500" />
+                                        CSV
+                                    </button>
+                                </div>
+
                                 <button 
                                     onClick={() => {
                                         if (window.confirm(`Deseja remover ${selectedLeadIds.size} leads permanentemente?`)) {
@@ -1612,6 +1746,24 @@ const CRMView: React.FC<CRMViewProps & { permissions?: any }> = ({ onConvertLead
 
                     {/* Right: Date Filters & Actions */}
                     <div className="flex flex-wrap items-center gap-4">
+
+                        {/* Export Buttons */}
+                        <div className="flex bg-gray-100 dark:bg-[#111] p-1 rounded-lg border border-transparent dark:border-gray-800">
+                             <button
+                                onClick={() => exportLeadsToPDF(false)}
+                                className="p-2 text-gray-500 hover:text-red-500 hover:bg-white dark:hover:bg-[#222] rounded-md transition-all"
+                                title="Exportar Tudo para PDF"
+                            >
+                                <FileText size={16} />
+                            </button>
+                            <button
+                                onClick={() => exportLeadsToCSV(false)}
+                                className="p-2 text-gray-500 hover:text-green-500 hover:bg-white dark:hover:bg-[#222] rounded-md transition-all"
+                                title="Exportar Tudo para CSV"
+                            >
+                                <FileSpreadsheet size={16} />
+                            </button>
+                        </div>
 
                         {/* Date Filter Compact */}
                         <div className="flex bg-gray-100 dark:bg-[#111] p-1 rounded-lg border border-transparent dark:border-gray-800">
