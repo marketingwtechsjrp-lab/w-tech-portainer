@@ -570,3 +570,63 @@ export interface Shipment {
     deliveredAt?: string;
     status: string;
 }
+
+// ─── FlowUp — Retrabalho de Leads Perdidos ────────────────────────────────────
+
+export type FlowUpPhase = 'accommodation' | 'nurturing' | 'reactivation' | 'reactivated' | 'archived';
+export type FlowUpStatus = 'active' | 'paused' | 'converted' | 'archived';
+export type FlowUpLostReason = 'price' | 'date' | 'location' | 'not_now' | 'comparing' | 'no_response' | 'other';
+export type FlowUpActivityType = 'whatsapp_sent' | 'email_sent' | 'email_opened' | 'link_clicked' | 'phase_changed' | 'manual_note' | 'reactivated' | 'responded';
+export type FlowUpChannel = 'whatsapp' | 'email' | 'system' | 'manual';
+
+export interface FlowUpLead {
+    id: string;
+    lead_id?: string;
+    name: string;
+    email?: string;
+    phone?: string;
+    course_interest?: string;
+    region_city?: string;
+    region_state?: string;
+    lead_source_type?: string;
+    lost_reason?: FlowUpLostReason;
+    lost_reason_notes?: string;
+    phase: FlowUpPhase;
+    flowup_status: FlowUpStatus;
+    entered_at: string;
+    phase_started_at: string;
+    last_contacted_at?: string;
+    reactivated_at?: string;
+    contact_count: number;
+    email_open_count: number;
+    link_click_count: number;
+    tags?: string[];
+    notes?: string;
+    created_by?: string;
+    updated_at?: string;
+}
+
+export interface FlowUpActivity {
+    id: string;
+    flowup_lead_id: string;
+    type: FlowUpActivityType;
+    channel?: FlowUpChannel;
+    subject?: string;
+    body?: string;
+    metadata?: any;
+    performed_by?: string;
+    created_at: string;
+}
+
+export interface FlowUpSegment {
+    id: string;
+    name: string;
+    description?: string;
+    rules: Record<string, string>;
+    cached_count: number;
+    last_synced_at?: string;
+    is_active: boolean;
+    created_by?: string;
+    created_at: string;
+    updated_at?: string;
+}

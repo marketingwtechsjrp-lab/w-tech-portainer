@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import { 
-    BarChart2, Users, Megaphone, FileText
+    BarChart2, Users, Megaphone, FileText, GitBranch, RefreshCw
 } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import ListsManager from './ListsManager';
 import CampaignsManager from './CampaignsManager';
 import MessageTemplateManager from '../WhatsApp/MessageTemplateManager';
+import EmailFlowsView from './EmailFlowsView';
+import FlowUpView from './FlowUpView';
 
 // Sub-components
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -297,6 +299,8 @@ const CampaignsView = ({ permissions }: { permissions?: any }) => {
         { id: 'Lists', icon: Users, label: 'Listas Inteligentes', permission: 'marketing_manage_lists' },
         { id: 'Campaigns', icon: Megaphone, label: 'Campanhas', permission: 'marketing_manage_campaigns' },
         { id: 'Templates', icon: FileText, label: 'Modelos', permission: 'marketing_manage_templates' },
+        { id: 'Flows', icon: GitBranch, label: 'Fluxos Automáticos', permission: 'marketing_manage_campaigns' },
+        { id: 'FlowUp', icon: RefreshCw, label: 'FlowUp', permission: 'marketing_manage_campaigns' },
     ].filter(tab => hasPerm(tab.permission));
 
     const [activeTab, setActiveTab] = useState<string>(
@@ -345,6 +349,8 @@ const CampaignsView = ({ permissions }: { permissions?: any }) => {
                 {activeTab === 'Lists' && <ListsManager permissions={permissions} />}
                 {activeTab === 'Campaigns' && <CampaignsManager permissions={permissions} />}
                 {activeTab === 'Templates' && <MessageTemplateManager permissions={permissions} />}
+                {activeTab === 'Flows' && <EmailFlowsView permissions={permissions} />}
+                {activeTab === 'FlowUp' && <FlowUpView />}
             </div>
         </div>
     );

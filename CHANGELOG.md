@@ -1,6 +1,15 @@
 # Histórico de Atualizações - W-Tech Platform
 
 
+## v2.9.6 (2026-03-11) - Módulo FlowUp & Inteligência de Leads
+- FEAT: Novo módulo "FlowUp" para reengajamento inteligente de leads perdidos/esfriados.
+- FEAT: Integração automática com o CRM: Leads 'Cold' e 'Rejected' entram no funil do FlowUp.
+- FEAT: Dashboard analítico para monitoramento de KPIs e atividades de reaquecimento.
+- FEAT: Segmentação dinâmica e réguas de relacionamento baseadas no contexto do lead.
+- FIX: Implementada constraint UNIQUE em lead_id para garantir integridade dos dados no FlowUp.
+- FIX: Resolução de conflitos de tipos TypeScript nos componentes de Automação e Marketing.
+- UX: Interface dedicada com timeline de atividades e ações rápidas via WhatsApp.
+
 ## v2.9.4 (2026-02-10) - Atualização de Endereço - W-Tech Lisboa
 - Atualização do endereço para Sintra Business Park - Edifício 01
 - Inclusão de botão para localização via Google Maps

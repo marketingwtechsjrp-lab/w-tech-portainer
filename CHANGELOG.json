@@ -1,5 +1,20 @@
 [
   {
+    "version": "2.9.6",
+    "date": "2026-03-11",
+    "title": "Módulo FlowUp & Inteligência de Leads",
+    "changes": [
+      "FEAT: Novo módulo \"FlowUp\" para reengajamento inteligente de leads perdidos/esfriados.",
+      "FEAT: Integração automática com o CRM: Leads 'Cold' e 'Rejected' entram no funil do FlowUp.",
+      "FEAT: Dashboard analítico para monitoramento de KPIs e atividades de reaquecimento.",
+      "FEAT: Segmentação dinâmica e réguas de relacionamento baseadas no contexto do lead.",
+      "FIX: Implementada constraint UNIQUE em lead_id para garantir integridade dos dados no FlowUp.",
+      "FIX: Resolução de conflitos de tipos TypeScript nos componentes de Automação e Marketing.",
+      "UX: Interface dedicada com timeline de atividades e ações rápidas via WhatsApp."
+    ],
+    "author": "Antigravity"
+  },
+  {
     "version": "2.9.5",
     "date": "2026-03-05",
     "title": "Melhoria Visual CRM: Origem e Cidade",
