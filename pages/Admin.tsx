@@ -1262,7 +1262,8 @@ const CoursesManagerView = ({ initialLead, initialCourseId, onConsumeInitialLead
                 </thead>
                 <tbody>
                     ${enrollments.map((enr, i) => {
-            const balance = (currentCourse?.price || 0) - (enr.amountPaid || 0);
+            const currentTotal = enr.totalAmount ?? currentCourse?.price ?? 0;
+            const balance = currentTotal - (enr.amountPaid || 0);
             const paymentStatus = balance > 0 ? `Restam ${currentCourse?.currency === 'EUR' ? '€' : currentCourse?.currency === 'USD' ? '$' : 'R$'} ${balance.toFixed(2)}` : 'QUITADO';
             return `
                         <tr>
