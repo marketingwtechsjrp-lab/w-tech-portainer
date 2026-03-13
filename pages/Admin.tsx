@@ -1756,8 +1756,8 @@ const CoursesManagerView = ({ initialLead, initialCourseId, onConsumeInitialLead
                                                 <div className="text-xs text-gray-500 dark:text-gray-400">{enr.studentPhone}</div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${enr.status === 'CheckedIn' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                                                    {enr.status === 'CheckedIn' ? 'Presente' : 'Confirmado'}
+                                                <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${enr.status === 'CheckedIn' ? 'bg-green-100 text-green-700' : enr.status === 'Pending' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' : 'bg-yellow-100 text-yellow-700'}`}>
+                                                    {enr.status === 'CheckedIn' ? 'Presente' : enr.status === 'Pending' ? 'Pendente' : 'Confirmado'}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
