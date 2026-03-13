@@ -12,6 +12,7 @@ import {
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
     BarChart, Bar, Cell
 } from 'recharts';
+import { FunnelChart } from '../../ui/funnel-chart';
 
 // --- Types ---
 interface KpiData {
@@ -333,10 +334,10 @@ const DashboardView = ({ isAdmin = false, userId, permissions }: { isAdmin?: boo
             const leadsNegotiating = myLeads.filter(l => ['Negotiating', 'Qualified', 'Proposta', 'Agendado'].includes(l.status)).length;
             
             setFunnelData([
-                { name: 'Total Leads', value: totalLeads, fill: '#3b82f6' },
-                { name: 'Interação', value: leadsInteracted, fill: '#8b5cf6' },
-                { name: 'Negociação', value: leadsNegotiating + convertedLeads, fill: '#f59e0b' },
-                { name: 'Vendas', value: convertedLeads, fill: '#10b981' },
+                { label: 'Total Leads', value: totalLeads, color: '#3b82f6' },
+                { label: 'Interação', value: leadsInteracted, color: '#8b5cf6' },
+                { label: 'Negociação', value: leadsNegotiating + convertedLeads, color: '#f59e0b' },
+                { label: 'Vendas', value: convertedLeads, color: '#10b981' },
             ]);
 
 
@@ -519,28 +520,20 @@ const DashboardView = ({ isAdmin = false, userId, permissions }: { isAdmin?: boo
                     <h3 className="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2 mb-6">
                         <Target className="text-blue-500" size={18} /> Funil de Conversão
                     </h3>
-                    <div className="flex flex-col gap-2 mt-4">
-                        {funnelData.map((stage, i) => (
-                            <div key={i} className="relative h-12 flex items-center group">
-                                {/* Funnel Shape Background */}
-                                <div 
-                                    className="absolute left-0 top-0 bottom-0 bg-blue-500/10 dark:bg-white/5 rounded-r-xl transition-all duration-500 group-hover:bg-blue-500/20"
-                                    style={{ width: `${funnelData[0]?.value > 0 ? (stage.value / funnelData[0].value) * 100 : 0}%` }}
-                                ></div>
-                                
-                                <div className="relative z-10 flex w-full justify-between px-4 items-center">
-                                    <span className="text-sm font-bold text-gray-600 dark:text-gray-300">{stage.name}</span>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-xs font-medium text-gray-400">
-                                            {i > 0 && funnelData[i-1]?.value > 0 ? `${((stage.value / funnelData[i-1].value) * 100).toFixed(0)}%` : '100%'}
-                                        </span>
-                                        <span className="text-sm font-black text-gray-800 dark:text-gray-100 bg-white dark:bg-black/50 px-2 py-1 rounded-md shadow-sm border border-gray-100 dark:border-white/10">
-                                            {stage.value}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                    <div className="mt-4">
+                        {funnelData.length > 0 && (
+                            <FunnelChart
+                                data={funnelData}
+                                orientation="horizontal"
+                                layers={3}
+                                staggerDelay={0.1}
+                                edges="curved"
+                                labelLayout="spread"
+                                showPercentage={true}
+                                showValues={true}
+                                showLabels={true}
+                            />
+                        )}
                     </div>
                 </div>
 
