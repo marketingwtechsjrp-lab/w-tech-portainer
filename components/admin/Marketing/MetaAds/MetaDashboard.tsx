@@ -65,10 +65,18 @@ const MetaDashboard = ({ slug }: { slug: string | null }) => {
             const ovData = await ovResp.json();
             const inData = await inResp.json();
             
-            setOverview(ovData);
-            setInsights(inData);
+            if (ovData && !ovData.error) {
+                setOverview(ovData);
+            }
+            if (Array.isArray(inData)) {
+                setInsights(inData);
+            } else {
+                setInsights([]);
+                if (inData.error) console.error("API Error (Insights):", inData.error);
+            }
         } catch (error) {
             console.error("Error loading Meta dashboard data:", error);
+            setInsights([]);
         } finally {
             setLoading(false);
         }

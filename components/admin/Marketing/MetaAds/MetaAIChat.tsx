@@ -34,7 +34,12 @@ const MetaAIChat = ({ slug }: { slug: string | null }) => {
         try {
             const response = await fetch(`${API_BASE}/chat/history`);
             const data = await response.json();
-            setMessages(data.history || []);
+            if (data && data.history) {
+                setMessages(data.history);
+            } else {
+                setMessages([]);
+                if (data.error) console.error("History Error:", data.error);
+            }
         } catch (error) {
             console.error("Error fetching chat history:", error);
         }

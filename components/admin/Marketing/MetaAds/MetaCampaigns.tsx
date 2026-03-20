@@ -27,7 +27,12 @@ const MetaCampaigns = ({ slug }: { slug: string | null }) => {
             const response = await fetch(`${API_BASE}/meta/campaigns?status=${statusFilter}`);
             if (!response.ok) throw new Error('Falha ao carregar campanhas');
             const data = await response.json();
-            setCampaigns(data);
+            if (Array.isArray(data)) {
+                setCampaigns(data);
+            } else {
+                setCampaigns([]);
+                if (data.error) console.error("API Error (Campaigns):", data.error);
+            }
         } catch (error) {
             console.error("Error fetching Meta campaigns:", error);
         } finally {
