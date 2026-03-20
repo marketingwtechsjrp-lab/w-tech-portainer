@@ -3,41 +3,35 @@ version: '3.8'
 services:
   # Python Backend
   meta-api:
-    build:
-      context: ./meta
-      dockerfile: Dockerfile
     image: wtech-meta-api:latest
-    container_name: wtech-meta-api
     restart: unless-stopped
     networks:
       - traefik-public
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.wtech-api.rule=Host(`site2.w-techbrasil.com.br`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.wtech-api.entrypoints=websecure"
-      - "traefik.http.routers.wtech-api.tls.certresolver=letsencrypt"
-      - "traefik.http.services.wtech-api.loadbalancer.server.port=5000"
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.wtech-api.rule=Host(`site2.w-techbrasil.com.br`) && PathPrefix(`/api`)"
+        - "traefik.http.routers.wtech-api.entrypoints=websecure"
+        - "traefik.http.routers.wtech-api.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.wtech-api.loadbalancer.server.port=5000"
+        - "traefik.http.routers.wtech-api.priority=2"
 
+  # React Frontend
   frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - VITE_API_BASE_URL=https://site2.w-techbrasil.com.br/api
     image: wtech-frontend:latest
-    container_name: wtech-frontend
     restart: unless-stopped
     networks:
       - traefik-public
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.wtech-frontend.rule=Host(`site2.w-techbrasil.com.br`)"
-      - "traefik.http.routers.wtech-frontend.entrypoints=websecure"
-      - "traefik.http.routers.wtech-frontend.tls.certresolver=letsencrypt"
-      - "traefik.http.services.wtech-frontend.loadbalancer.server.port=80"
-      # Importance: Frontend must be lower priority or defined after API to avoid catching /api paths if not using PathPrefix for frontend
-      - "traefik.http.routers.wtech-frontend.priority=1"
-      - "traefik.http.routers.wtech-api.priority=2"
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.wtech-frontend.rule=Host(`site2.w-techbrasil.com.br`)"
+        - "traefik.http.routers.wtech-frontend.entrypoints=websecure"
+        - "traefik.http.routers.wtech-frontend.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.wtech-frontend.loadbalancer.server.port=80"
+        - "traefik.http.routers.wtech-frontend.priority=1"
 
 networks:
   traefik-public:
