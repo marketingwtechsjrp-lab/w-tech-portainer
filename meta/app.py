@@ -377,4 +377,5 @@ def api_chat_history():
     return jsonify({"history": history})
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # Em produção, ouça em 0.0.0.0 para o Docker conseguir acessar
+    app.run(host='0.0.0.0', port=5000)
