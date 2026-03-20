@@ -6,6 +6,7 @@ services:
     build:
       context: ./meta
       dockerfile: Dockerfile
+    image: wtech-meta-api:latest
     container_name: wtech-meta-api
     restart: unless-stopped
     networks:
@@ -17,13 +18,13 @@ services:
       - "traefik.http.routers.wtech-api.tls.certresolver=letsencrypt"
       - "traefik.http.services.wtech-api.loadbalancer.server.port=5000"
 
-  # React Frontend
   frontend:
     build:
       context: .
       dockerfile: Dockerfile
       args:
         - VITE_API_BASE_URL=https://site2.w-techbrasil.com.br/api
+    image: wtech-frontend:latest
     container_name: wtech-frontend
     restart: unless-stopped
     networks:
