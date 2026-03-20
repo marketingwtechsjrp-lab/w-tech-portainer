@@ -1,29 +1,30 @@
 version: '3.8'
 
 services:
-  # Python Backend
-  meta-api:
-    build:
-      context: ./meta
-      dockerfile: Dockerfile
-    image: wtech-meta-api:latest
-    restart: unless-stopped
-    networks:
-      - hidro
-    volumes:
-      - ./meta/accounts.json:/app/accounts.json
-      - ./meta/settings.json:/app/settings.json
-      - ./meta/memory:/app/memory
-    deploy:
-      replicas: 1
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.wtech2-api.rule=Host(`site2.w-techbrasil.com.br`) && PathPrefix(`/api`)"
-        - "traefik.http.routers.wtech2-api.entrypoints=websecure"
-        - "traefik.http.routers.wtech2-api.tls.certresolver=letsencryptresolver"
-        - "traefik.http.services.wtech2-api.loadbalancer.server.port=5000"
-        - "traefik.http.routers.wtech2-api.priority=2"
-        - "traefik.docker.network=hidro"
+    # Python Backend
+    meta-api:
+      build:
+        context: ./meta
+        dockerfile: Dockerfile
+      image: wtech-meta-api:latest
+      networks:
+        - hidro
+      volumes:
+        - meta_accounts:/app/accounts.json
+        - meta_settings:/app/settings.json
+        - meta_memory:/app/memory
+      deploy:
+        replicas: 1
+        restart_policy:
+          condition: on-failure
+        labels:
+          - "traefik.enable=true"
+          - "traefik.http.routers.wtech2-api.rule=Host(`site2.w-techbrasil.com.br`) && PathPrefix(`/api`)"
+          - "traefik.http.routers.wtech2-api.entrypoints=websecure"
+          - "traefik.http.routers.wtech2-api.tls.certresolver=letsencryptresolver"
+          - "traefik.http.services.wtech2-api.loadbalancer.server.port=5000"
+          - "traefik.http.routers.wtech2-api.priority=2"
+          - "traefik.docker.network=hidro"
 
   # React Frontend
   frontend:
@@ -33,11 +34,12 @@ services:
       args:
         - VITE_API_BASE_URL=/api
     image: wtech-frontend:latest
-    restart: unless-stopped
     networks:
       - hidro
     deploy:
       replicas: 1
+      restart_policy:
+        condition: on-failure
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.wtech2-frontend.rule=Host(`site2.w-techbrasil.com.br`)"
@@ -50,3 +52,8 @@ services:
 networks:
   hidro:
     external: true
+
+volumes:
+  meta_accounts:
+  meta_settings:
+  meta_memory:
