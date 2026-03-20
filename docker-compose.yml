@@ -11,11 +11,12 @@ services:
       replicas: 1
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.wtech-api.rule=Host(`site2.w-techbrasil.com.br`) && PathPrefix(`/api`)"
-        - "traefik.http.routers.wtech-api.entrypoints=websecure"
-        - "traefik.http.routers.wtech-api.tls.certresolver=letsencryptresolver"
-        - "traefik.http.services.wtech-api.loadbalancer.server.port=5000"
-        - "traefik.http.routers.wtech-api.priority=2"
+        - "traefik.http.routers.wtech2-api.rule=Host(`site2.w-techbrasil.com.br`) && PathPrefix(`/api`)"
+        - "traefik.http.routers.wtech2-api.entrypoints=websecure"
+        - "traefik.http.routers.wtech2-api.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.wtech2-api.loadbalancer.server.port=5000"
+        - "traefik.http.routers.wtech2-api.priority=2"
+        - "traefik.docker.network=hidro"
 
   # React Frontend
   frontend:
@@ -27,11 +28,12 @@ services:
       replicas: 1
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.nh-frontend.rule=Host(`site2.w-techbrasil.com.br`)"
-        - "traefik.http.routers.nh-frontend.entrypoints=websecure"
-        - "traefik.http.routers.nh-frontend.tls.certresolver=letsencryptresolver"
-        - "traefik.http.services.nh-frontend.loadbalancer.server.port=80"
-        - "traefik.http.routers.nh-frontend.priority=1"
+        - "traefik.http.routers.wtech2-frontend.rule=Host(`site2.w-techbrasil.com.br`)"
+        - "traefik.http.routers.wtech2-frontend.entrypoints=websecure"
+        - "traefik.http.routers.wtech2-frontend.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.wtech2-frontend.loadbalancer.server.port=80"
+        - "traefik.http.routers.wtech2-frontend.priority=1"
+        - "traefik.docker.network=hidro"
 
 networks:
   hidro:
