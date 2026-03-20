@@ -6,7 +6,7 @@ services:
     image: wtech-meta-api:latest
     restart: unless-stopped
     networks:
-      - traefik-public
+      - hidro
     deploy:
       replicas: 1
       labels:
@@ -22,17 +22,17 @@ services:
     image: wtech-frontend:latest
     restart: unless-stopped
     networks:
-      - traefik-public
+      - hidro
     deploy:
       replicas: 1
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.wtech-frontend.rule=Host(`site2.w-techbrasil.com.br`)"
-        - "traefik.http.routers.wtech-frontend.entrypoints=websecure"
-        - "traefik.http.routers.wtech-frontend.tls.certresolver=letsencryptresolver"
-        - "traefik.http.services.wtech-frontend.loadbalancer.server.port=80"
-        - "traefik.http.routers.wtech-frontend.priority=1"
+        - "traefik.http.routers.nh-frontend.rule=Host(`site2.w-techbrasil.com.br`)"
+        - "traefik.http.routers.nh-frontend.entrypoints=websecure"
+        - "traefik.http.routers.nh-frontend.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.nh-frontend.loadbalancer.server.port=80"
+        - "traefik.http.routers.nh-frontend.priority=1"
 
 networks:
-  traefik-public:
+  hidro:
     external: true
